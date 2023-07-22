@@ -1,4 +1,4 @@
-package com.example.syncrowbackend.friendrequest;
+package com.example.syncrowbackend.friendrequest.entity;
 
 import com.example.syncrowbackend.base.entity.BaseTimeEntity;
 import com.example.syncrowbackend.user.entity.User;
@@ -17,4 +17,6 @@ public class Friendrequest extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "to_id", referencedColumnName = "id")
     private User toUser;
+
+    private String status;
 }
