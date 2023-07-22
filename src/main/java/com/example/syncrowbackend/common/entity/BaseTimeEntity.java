@@ -1,4 +1,4 @@
-package com.example.syncrowbackend.base.entity;
+package com.example.syncrowbackend.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

@@ -1,4 +1,4 @@
-package com.example.syncrowbackend.global.config;
+package com.example.syncrowbackend.common.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;

@@ -1,10 +1,10 @@
 package com.example.syncrowbackend.user.entity;
 
-import com.example.syncrowbackend.base.entity.BaseTimeEntity;
+import com.example.syncrowbackend.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
@@ -21,18 +21,14 @@ public class User extends BaseTimeEntity {
     @NotBlank
     private String username;
 
-    @Column(unique = true)
-    @Size(min = 1, max = 30)
-    private String nickname;
-
-    private String phone_number;
+    @Column(nullable = false, unique = true)
+    private Long kakaoId;
 
     @Column(unique = true)
     private String email;
 
-    private String role;
+    private String profileImage;
 
-    private String status;
-
-    private String digital_level;
+    @ColumnDefault(value = "36.5")
+    private double temp;
 }

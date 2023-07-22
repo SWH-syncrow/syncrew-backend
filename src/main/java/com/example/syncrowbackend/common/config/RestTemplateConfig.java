@@ -1,4 +1,4 @@
-package com.example.syncrowbackend.global.config;
+package com.example.syncrowbackend.common.config;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;

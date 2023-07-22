@@ -1,4 +1,4 @@
-package com.example.syncrowbackend.exception;
+package com.example.syncrowbackend.common.exception;
 
 import lombok.Data;
 
