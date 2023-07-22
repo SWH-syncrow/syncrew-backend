@@ -33,8 +33,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(errorResponse);
     }
 
-    @ExceptionHandler(value = { BusinessException.class })
-    protected ResponseEntity<ErrorResponse> handleConflict(BusinessException e) {
+    @ExceptionHandler(BusinessException.class)
+    protected ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
         log.error("BusinessException", e);
         ErrorResponse errorResponse = ErrorResponse.of(e.getErrorCode().getCode(), e.getMessage());
         return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(errorResponse);
