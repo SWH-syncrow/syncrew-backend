@@ -8,5 +8,5 @@ import lombok.Setter;
 @Setter
 public class LoginRequestDto {
     @NotBlank
-    private String kakaoToken;
+    private String accessToken;
 }

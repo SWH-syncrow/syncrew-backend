@@ -23,7 +23,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody @Valid LoginRequestDto requestDto) throws JsonProcessingException {
-        LoginResponseDto responseDto = authService.login(requestDto.getKakaoToken());
+        LoginResponseDto responseDto = authService.login(requestDto.getAccessToken());
         return ResponseEntity.ok(responseDto);
     }
 

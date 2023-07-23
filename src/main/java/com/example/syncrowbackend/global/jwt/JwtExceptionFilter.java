@@ -33,6 +33,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
     private void setErrorResponse(ErrorCode errorCode, HttpServletResponse response) {
         response.setStatus(errorCode.getHttpStatus().value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
         ErrorResponse errorResponse = ErrorResponse.of(errorCode.getCode(), errorCode.getMessage());
         try {
             response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
