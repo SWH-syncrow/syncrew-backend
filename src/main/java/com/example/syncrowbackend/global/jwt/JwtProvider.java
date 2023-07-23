@@ -1,14 +1,17 @@
 package com.example.syncrowbackend.global.jwt;
 
-import com.example.syncrowbackend.global.error.BusinessException;
+import com.example.syncrowbackend.global.error.AuthenticationException;
 import com.example.syncrowbackend.global.error.ErrorCode;
 import com.example.syncrowbackend.global.redis.RedisUtil;
+import com.example.syncrowbackend.user.entity.User;
 import com.example.syncrowbackend.user.entity.UserRole;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -17,9 +20,8 @@ import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 
-@Slf4j(topic = "JWT")
 @Component
-public class TokenProvider {
+public class JwtProvider {
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String AUTHORIZATION_KEY = "auth";
     public static final String BEARER_PREFIX = "Bearer ";
@@ -29,10 +31,10 @@ public class TokenProvider {
     @Value("${jwt.secret}")
     private String secret;
     private Key key;
-    private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS512;
+    private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
     private final RedisUtil redisUtil;
 
-    public TokenProvider(RedisUtil redisUtil) {
+    public JwtProvider(RedisUtil redisUtil) {
         this.redisUtil = redisUtil;
     }
 
@@ -42,10 +44,18 @@ public class TokenProvider {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    public TokenDto issueToken(String email, UserRole role) {
+    public TokenResponseDto issueToken(User user) {
+        String email = user.getEmail();
+        UserRole role = user.getRole();
         String accessToken = createAccessToken(email, role);
         String refreshToken = createRefreshToken(email);
-        return new TokenDto(accessToken, refreshToken);
+
+        if(redisUtil.hasKey(email)) {
+            redisUtil.delete(email);
+        }
+        redisUtil.set(email, refreshToken, REFRESH_TOKEN_EXPIRATION_TIME);
+
+        return new TokenResponseDto(accessToken, refreshToken);
     }
 
     private String createAccessToken(String email, UserRole role) {
@@ -74,35 +84,41 @@ public class TokenProvider {
     }
 
     public String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-            return bearerToken.substring(7);
+        String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
+        if (!StringUtils.hasText(authorizationHeader)) {
+            throw new AuthenticationException(ErrorCode.EMPTY_AUTHORIZATION_HEADER);
         }
-        return null;
+        if(!authorizationHeader.startsWith(BEARER_PREFIX)) {
+            throw new AuthenticationException(ErrorCode.INVALID_TOKEN_TYPE);
+        }
+        return authorizationHeader.substring(7);
     }
 
-    public boolean validateToken(String token) {
+    public void validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             if(redisUtil.isOnBlackList(token)) {
-                throw new BusinessException(ErrorCode.UNAUTHORIZED_USER);
+                throw new AuthenticationException(ErrorCode.BLACKLISTED_TOKEN);
             }
-            return true;
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            log.error("잘못된 JWT 서명입니다.");
         } catch (ExpiredJwtException e) {
-            log.error("만료된 JWT 토큰입니다.");
-        } catch (UnsupportedJwtException e) {
-            log.error("지원되지 않는 JWT 토큰입니다.");
-        } catch (IllegalArgumentException e) {
-            log.error("JWT 토큰이 잘못되었습니다.");
-        } catch (BusinessException e) {
-            log.error(e.getMessage());
+            throw new AuthenticationException(ErrorCode.EXPIRED_TOKEN);
+        } catch (Exception e) {
+            throw new AuthenticationException(ErrorCode.INVALID_TOKEN);
         }
-        return false;
+    }
+
+    public long getExpiration(String token) {
+        return new Date().getTime() - getClaims(token).getExpiration().getTime();
     }
 
     public Claims getClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        Claims claims;
+        try {
+            claims = Jwts.parserBuilder().setSigningKey(key).build()
+                    .parseClaimsJws(token).getBody();
+        } catch (Exception e) {
+            throw new AuthenticationException(ErrorCode.INVALID_TOKEN);
+        }
+        return claims;
     }
 }

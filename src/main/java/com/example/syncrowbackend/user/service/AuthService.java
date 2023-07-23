@@ -1,9 +1,13 @@
 package com.example.syncrowbackend.user.service;
 
-import com.example.syncrowbackend.global.jwt.TokenDto;
-import com.example.syncrowbackend.global.jwt.TokenProvider;
+import com.example.syncrowbackend.global.error.AuthenticationException;
+import com.example.syncrowbackend.global.error.BusinessException;
+import com.example.syncrowbackend.global.error.ErrorCode;
+import com.example.syncrowbackend.global.jwt.JwtProvider;
+import com.example.syncrowbackend.global.jwt.TokenResponseDto;
+import com.example.syncrowbackend.global.redis.RedisUtil;
 import com.example.syncrowbackend.user.dto.KakaoUserDto;
-import com.example.syncrowbackend.user.dto.LoginRequestDto;
+import com.example.syncrowbackend.user.dto.LoginResponseDto;
 import com.example.syncrowbackend.user.entity.User;
 import com.example.syncrowbackend.user.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,16 +30,39 @@ import java.net.URI;
 public class AuthService {
 
     private final UserRepository userRepository;
-    private final TokenProvider tokenProvider;
+    private final JwtProvider jwtProvider;
     private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
+    private final RedisUtil redisUtil;
 
-    public TokenDto login(LoginRequestDto requestDto) throws JsonProcessingException {
-        KakaoUserDto kakaoUserDto = getKakaoUser(requestDto.getAccessToken());
+    public LoginResponseDto login(String kakaoToken) throws JsonProcessingException {
+        KakaoUserDto kakaoUserDto = getKakaoUserInfo(kakaoToken);
         User user = registerIfNeeded(kakaoUserDto);
-        return tokenProvider.issueToken(user.getEmail(), user.getRole());
+        TokenResponseDto token = jwtProvider.issueToken(user);
+
+        return new LoginResponseDto(user, token);
     }
 
-    private KakaoUserDto getKakaoUser(String accessToken) throws JsonProcessingException {
+    public TokenResponseDto reissue(String refreshToken) {
+        jwtProvider.validateToken(refreshToken);
+
+        String email = jwtProvider.getClaims(refreshToken).getSubject();
+        User user = findUser(email);
+        if (!redisUtil.hasKey(email) || !redisUtil.get(email).equals(refreshToken)) {
+           throw new AuthenticationException(ErrorCode.TOKEN_NOT_FOUND);
+        }
+
+        return jwtProvider.issueToken(user);
+    }
+
+    public void logout(String bearerToken, User user) {
+        String accessToken = bearerToken.substring(7);
+        redisUtil.delete(user.getEmail());
+        long expiration = jwtProvider.getExpiration(accessToken);
+        redisUtil.setBlackList(accessToken, "accessToken", expiration);
+    }
+
+    private KakaoUserDto getKakaoUserInfo(String accessToken) throws JsonProcessingException {
         URI uri = UriComponentsBuilder
                 .fromUriString("https://kapi.kakao.com")
                 .path("/v2/user/me")
@@ -54,8 +81,8 @@ public class AuthService {
 
         ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
 
-        JsonNode jsonNode = new ObjectMapper().readTree(response.getBody());
-        String name = jsonNode.get("kakao_account").get("name").asText();
+        JsonNode jsonNode = objectMapper.readTree(response.getBody());
+        String name = jsonNode.get("properties").get("nickname").asText();
         String email = jsonNode.get("kakao_account").get("email").asText();
 
         return new KakaoUserDto(name, email);
@@ -66,5 +93,10 @@ public class AuthService {
         return userRepository.findByEmail(email).orElse(
                 userRepository.save(new User(kakaoUserInfo))
         );
+    }
+
+    private User findUser(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     }
 }
