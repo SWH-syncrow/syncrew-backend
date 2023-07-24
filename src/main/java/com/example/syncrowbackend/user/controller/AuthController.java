@@ -9,7 +9,6 @@ import com.example.syncrowbackend.user.dto.LoginResponseDto;
 import com.example.syncrowbackend.user.entity.User;
 import com.example.syncrowbackend.user.service.AuthService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +21,9 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @GetMapping
-    public ResponseEntity<LoginResponseDto> login(@RequestParam String code) throws JsonProcessingException {
-        LoginResponseDto responseDto = authService.login(code);
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDto> login(@RequestParam @Valid LoginRequestDto requestDto) throws JsonProcessingException {
+        LoginResponseDto responseDto = authService.login(requestDto.getAccessToken());
         return ResponseEntity.ok(responseDto);
     }
 

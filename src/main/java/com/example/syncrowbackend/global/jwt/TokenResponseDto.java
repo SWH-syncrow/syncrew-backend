@@ -1,10 +1,9 @@
 package com.example.syncrowbackend.global.jwt;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.*;
 
-@Getter
-@AllArgsConstructor
+@Data
+@NoArgsConstructor
 public class TokenResponseDto {
     private String accessToken;
     private String refreshToken;

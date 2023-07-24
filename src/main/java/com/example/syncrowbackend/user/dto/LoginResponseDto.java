@@ -1,12 +1,10 @@
 package com.example.syncrowbackend.user.dto;
 
 import com.example.syncrowbackend.global.jwt.TokenResponseDto;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class LoginResponseDto {
     private UserResponseDto user;
