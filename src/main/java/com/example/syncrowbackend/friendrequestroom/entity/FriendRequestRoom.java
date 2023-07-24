@@ -12,19 +12,21 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "friend_request")
 public class FriendRequestRoom extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "from", referencedColumnName = "id")
-    private User from;
+    @JoinColumn(name = "requestedId", referencedColumnName = "id")
+    private User requestedId;
 
     @ManyToOne
-    @JoinColumn(name = "to", referencedColumnName = "id")
-    private User to;
+    @JoinColumn(name = "acceptedId", referencedColumnName = "id")
+    private User acceptedId;
 
+    @Enumerated(EnumType.STRING)
     private FriendRequestRoomStatus friendRequestRoomStatus; // 신청 대기,수락,취소
 
 }
