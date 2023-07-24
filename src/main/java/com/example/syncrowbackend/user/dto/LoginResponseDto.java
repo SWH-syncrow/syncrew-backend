@@ -1,7 +1,6 @@
 package com.example.syncrowbackend.user.dto;
 
 import com.example.syncrowbackend.global.jwt.TokenResponseDto;
-import com.example.syncrowbackend.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +9,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class LoginResponseDto {
-    private User user;
+    private UserResponseDto user;
     private TokenResponseDto token;
 }

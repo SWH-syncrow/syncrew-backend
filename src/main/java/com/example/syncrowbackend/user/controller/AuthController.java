@@ -3,15 +3,16 @@ package com.example.syncrowbackend.user.controller;
 import com.example.syncrowbackend.global.jwt.JwtProvider;
 import com.example.syncrowbackend.global.jwt.RefreshTokenDto;
 import com.example.syncrowbackend.global.jwt.TokenResponseDto;
-import com.example.syncrowbackend.global.security.UserDetailsImpl;
+import com.example.syncrowbackend.global.resolver.UserInfo;
 import com.example.syncrowbackend.user.dto.LoginRequestDto;
 import com.example.syncrowbackend.user.dto.LoginResponseDto;
+import com.example.syncrowbackend.user.entity.User;
 import com.example.syncrowbackend.user.service.AuthService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,9 +22,9 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody @Valid LoginRequestDto requestDto) throws JsonProcessingException {
-        LoginResponseDto responseDto = authService.login(requestDto.getAccessToken());
+    @GetMapping
+    public ResponseEntity<LoginResponseDto> login(@RequestParam String code) throws JsonProcessingException {
+        LoginResponseDto responseDto = authService.login(code);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -34,8 +35,8 @@ public class AuthController {
     }
 
     @DeleteMapping("/logout")
-    public ResponseEntity<Void> logout(@RequestHeader(JwtProvider.AUTHORIZATION_HEADER) String bearerToken, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        authService.logout(bearerToken, userDetails.getUser());
+    public ResponseEntity<Void> logout(@RequestHeader(JwtProvider.AUTHORIZATION_HEADER) String bearerToken, @UserInfo User user) {
+        authService.logout(bearerToken, user);
         return ResponseEntity.ok().build();
     }
 }

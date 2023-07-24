@@ -8,6 +8,7 @@ import com.example.syncrowbackend.global.jwt.TokenResponseDto;
 import com.example.syncrowbackend.global.redis.RedisUtil;
 import com.example.syncrowbackend.user.dto.KakaoUserDto;
 import com.example.syncrowbackend.user.dto.LoginResponseDto;
+import com.example.syncrowbackend.user.dto.UserResponseDto;
 import com.example.syncrowbackend.user.entity.User;
 import com.example.syncrowbackend.user.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -40,7 +41,7 @@ public class AuthService {
         User user = registerIfNeeded(kakaoUserDto);
         TokenResponseDto token = jwtProvider.issueToken(user);
 
-        return new LoginResponseDto(user, token);
+        return new LoginResponseDto(UserResponseDto.of(user), token);
     }
 
     public TokenResponseDto reissue(String refreshToken) {
