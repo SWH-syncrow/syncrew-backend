@@ -16,7 +16,7 @@ public class FriendRequestPostDto {
     private Long id;
 
     @NotNull(message = "친구신청 작성한 사람의 아이디가 필요합니다.")
-    private Long user_id;
+    private Long userId;
 
     @NotBlank(message = "게시물에 제목은 필요합니다.")
     private String title;
@@ -27,13 +27,13 @@ public class FriendRequestPostDto {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime modifiedAt = LocalDateTime.now();
+    LocalDateTime modifiedAt;
 
     @Builder
     public static FriendRequestPostDto toDto(FriendRequestPost post) {
         return FriendRequestPostDto.builder()
                 .id(post.getId())
-                .user_id(post.getUser().getId())
+                .userId(post.getUser().getId())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .build();
