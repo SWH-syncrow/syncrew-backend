@@ -22,7 +22,7 @@ public class FriendRequestPostDto {
     private String title;
 
     private String content;
-
+    @Builder.Default
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -36,6 +36,7 @@ public class FriendRequestPostDto {
                 .userId(post.getUser().getId())
                 .title(post.getTitle())
                 .content(post.getContent())
+                .modifiedAt(LocalDateTime.now())
                 .build();
     }
 
