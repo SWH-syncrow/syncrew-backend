@@ -3,9 +3,11 @@ package com.example.syncrowbackend.user.dto;
 import com.example.syncrowbackend.user.entity.User;
 import com.example.syncrowbackend.user.entity.UserRole;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @NoArgsConstructor
