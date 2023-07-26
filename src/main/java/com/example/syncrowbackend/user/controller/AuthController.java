@@ -5,6 +5,7 @@ import com.example.syncrowbackend.common.security.UserDetailsImpl;
 import com.example.syncrowbackend.user.dto.LoginRequestDto;
 import com.example.syncrowbackend.user.dto.LoginResponseDto;
 import com.example.syncrowbackend.user.dto.ReissueRequestDto;
+import com.example.syncrowbackend.user.dto.UserResponseDto;
 import com.example.syncrowbackend.user.service.AuthServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -33,13 +34,19 @@ public class AuthController {
 
     @PostMapping("/reissue")
     public ResponseEntity<TokenResponseDto> refresh(@RequestBody @Valid ReissueRequestDto requestDto) {
-        TokenResponseDto tokenResponseDto = authService.reissue(requestDto);
-        return ResponseEntity.ok(tokenResponseDto);
+        TokenResponseDto responseDto = authService.reissue(requestDto);
+        return ResponseEntity.ok(responseDto);
     }
 
     @DeleteMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         authService.logout(request, userDetails.getUser());
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<UserResponseDto> getUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        UserResponseDto responseDto = authService.getUser(userDetails.getUser());
+        return ResponseEntity.ok(responseDto);
     }
 }

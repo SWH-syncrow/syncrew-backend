@@ -116,4 +116,8 @@ public class AuthServiceImpl implements AuthService {
         return userRepository.findByKakaoId(kakaoId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND_ERROR, "해당 사용자가 존재하지 않습니다."));
     }
+
+    public UserResponseDto getUser(User user) {
+        return UserResponseDto.toDto(user);
+    }
 }
