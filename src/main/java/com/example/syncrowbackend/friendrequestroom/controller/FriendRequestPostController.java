@@ -36,9 +36,9 @@ public class FriendRequestPostController {
         return ResponseEntity.ok(postService.searchAllPost(pageable));
     }
 
-    @GetMapping("/list/user/{nickname}")
-    public ResponseEntity<Page<FriendRequestPostDto>> searchPostsByUser(@PathVariable String nickname, @PageableDefault(size = 10, sort = "id",  direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(postService.searchPostsByUser(nickname, pageable));
+    @GetMapping("/list/user/{kakaoId}")
+    public ResponseEntity<Page<FriendRequestPostDto>> searchPostsByUser(@PathVariable String kakaoId, @PageableDefault(size = 10, sort = "id",  direction = Sort.Direction.DESC) Pageable pageable) {
+        return ResponseEntity.ok(postService.searchPostsByUser(kakaoId, pageable));
     }
 
     @GetMapping("/search/keyword/")

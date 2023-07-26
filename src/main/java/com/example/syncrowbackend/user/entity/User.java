@@ -1,14 +1,15 @@
 package com.example.syncrowbackend.user.entity;
 
-import com.example.syncrowbackend.base.entity.BaseTimeEntity;
+import com.example.syncrowbackend.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Getter
 @Setter
+@DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -18,21 +19,19 @@ public class User extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
+    private String kakaoId;
+
     @NotBlank
     private String username;
 
     @Column(unique = true)
-    @Size(min = 1, max = 30)
-    private String nickname;
-
-    private String phone_number;
-
-    @Column(unique = true)
     private String email;
 
-    private String role;
+    private String profileImage;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
-    private String digital_level;
+    private Double temp;
 }

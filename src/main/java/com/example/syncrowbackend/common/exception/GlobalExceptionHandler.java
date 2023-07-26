@@ -1,4 +1,4 @@
-package com.example.syncrowbackend.exception;
+package com.example.syncrowbackend.common.exception;
 
 import com.example.syncrowbackend.friendrequestroom.service.FriendRequestPostServiceImpl;
 import org.slf4j.Logger;

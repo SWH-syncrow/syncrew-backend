@@ -1,7 +1,7 @@
 package com.example.syncrowbackend.friendrequestroom.service;
 
-import com.example.syncrowbackend.exception.CustomException;
-import com.example.syncrowbackend.exception.ErrorCode;
+import com.example.syncrowbackend.common.exception.CustomException;
+import com.example.syncrowbackend.common.exception.ErrorCode;
 import com.example.syncrowbackend.friendrequestroom.dto.FriendRequestPostDto;
 import com.example.syncrowbackend.friendrequestroom.entity.FriendRequestPost;
 import com.example.syncrowbackend.friendrequestroom.repository.FriendRequestPostRepository;
@@ -36,8 +36,8 @@ public class FriendRequestPostServiceImpl implements FriendRequestPostService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<FriendRequestPostDto> searchPostsByUser(String nickname, Pageable pageable) {
-        User user = findUser(nickname);
+    public Page<FriendRequestPostDto> searchPostsByUser(String kakaoId, Pageable pageable) {
+        User user = findUser(kakaoId);
         Page<FriendRequestPost> posts = postRepository.findByUserId(user.getId(), pageable);
         return posts.map(FriendRequestPostDto::toDto);
     }
@@ -80,8 +80,8 @@ public class FriendRequestPostServiceImpl implements FriendRequestPostService {
     }
 
     @Transactional(readOnly = true)
-    private User findUser(String nickname) {
-        return userRepository.findByNickname(nickname).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND_ERROR, "존재하지 않는 사용자입니다."));
+    private User findUser(String kakaoId) {
+        return userRepository.findByKakaoId(kakaoId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND_ERROR, "존재하지 않는 사용자입니다."));
     }
 
     @Transactional(readOnly = true)

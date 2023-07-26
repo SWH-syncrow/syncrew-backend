@@ -1,6 +1,6 @@
 package com.example.syncrowbackend.friendrequestroom.entity;
 
-import com.example.syncrowbackend.base.entity.BaseTimeEntity;
+import com.example.syncrowbackend.common.entity.BaseTimeEntity;
 import com.example.syncrowbackend.friendrequestroom.enums.FriendRequestRoomStatus;
 import com.example.syncrowbackend.user.entity.User;
 import jakarta.persistence.*;

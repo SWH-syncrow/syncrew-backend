@@ -38,3 +38,4 @@ out/
 
 ### 임의 추가 ###
 **/application.properties
+**/application-db.properties
