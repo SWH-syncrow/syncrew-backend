@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 public interface FriendRequestPostService {
     FriendRequestPostDto searchById(Long id);
     Page<FriendRequestPostDto> searchAllPost(Pageable pageable);
-    Page<FriendRequestPostDto> searchPostsByUser(Long kakaoId, Pageable pageable);
+    Page<FriendRequestPostDto> searchPostsByUser(String kakaoId, Pageable pageable);
     Page<FriendRequestPostDto> searchByWord(String keyword, Pageable pageable);
 
 

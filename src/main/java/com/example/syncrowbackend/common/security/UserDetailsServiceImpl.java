@@ -15,7 +15,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return null;
+    public UserDetails loadUserByUsername(String kakaoId) throws UsernameNotFoundException {
+        User user = userRepository.findByKakaoId(kakaoId)
+                .orElseThrow(() -> new UsernameNotFoundException("해당 kakao id를 가진 사용자가 존재하지 않습니다."));
+
+        return new UserDetailsImpl(user);
     }
 }

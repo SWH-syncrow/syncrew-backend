@@ -36,7 +36,7 @@ public class FriendRequestPostServiceImpl implements FriendRequestPostService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<FriendRequestPostDto> searchPostsByUser(Long kakaoId, Pageable pageable) {
+    public Page<FriendRequestPostDto> searchPostsByUser(String kakaoId, Pageable pageable) {
         User user = findUser(kakaoId);
         Page<FriendRequestPost> posts = postRepository.findByUserId(user.getId(), pageable);
         return posts.map(FriendRequestPostDto::toDto);
@@ -80,7 +80,7 @@ public class FriendRequestPostServiceImpl implements FriendRequestPostService {
     }
 
     @Transactional(readOnly = true)
-    private User findUser(Long kakaoId) {
+    private User findUser(String kakaoId) {
         return userRepository.findByKakaoId(kakaoId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND_ERROR, "존재하지 않는 사용자입니다."));
     }
 

@@ -37,7 +37,7 @@ public class FriendRequestPostController {
     }
 
     @GetMapping("/list/user/{kakaoId}")
-    public ResponseEntity<Page<FriendRequestPostDto>> searchPostsByUser(@PathVariable Long kakaoId, @PageableDefault(size = 10, sort = "id",  direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<Page<FriendRequestPostDto>> searchPostsByUser(@PathVariable String kakaoId, @PageableDefault(size = 10, sort = "id",  direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(postService.searchPostsByUser(kakaoId, pageable));
     }
 

@@ -4,11 +4,12 @@ import com.example.syncrowbackend.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Getter
 @Setter
+@DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -18,17 +19,19 @@ public class User extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
+    private String kakaoId;
+
     @NotBlank
     private String username;
-
-    @Column(nullable = false, unique = true)
-    private Long kakaoId;
 
     @Column(unique = true)
     private String email;
 
     private String profileImage;
 
-    @ColumnDefault(value = "36.5")
-    private double temp;
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
+    private Double temp;
 }

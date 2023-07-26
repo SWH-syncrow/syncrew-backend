@@ -1,9 +1,6 @@
 package com.example.syncrowbackend.common.jwt;
 
-import com.example.syncrowbackend.common.error.ErrorCode;
-import com.example.syncrowbackend.common.error.ErrorResponse;
 import com.example.syncrowbackend.common.security.UserDetailsServiceImpl;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -21,45 +18,31 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@Slf4j(topic = "JWT 검증 및 인가")
+@Slf4j
 @RequiredArgsConstructor
-public class JwtAuthorizationFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenProvider tokenProvider;
-    private final ObjectMapper objectMapper;
     private final UserDetailsServiceImpl userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = tokenProvider.resolveToken(request);
-
-        if (StringUtils.hasText(token)) {
-            if (!tokenProvider.validateToken(token)) {
-                ErrorResponse errorResponse = ErrorResponse.of(
-                        ErrorCode.INVALID_TOKEN.getCode(),
-                        ErrorCode.INVALID_TOKEN.getMessage());
-
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.setContentType("application/json;charset=UTF-8");
-                response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
-                return;
-            }
+        if (StringUtils.hasText(token) && tokenProvider.validateToken(token)) {
             Claims claims = tokenProvider.getClaims(token);
             setAuthentication(claims.getSubject());
         }
         filterChain.doFilter(request, response);
     }
 
-    public void setAuthentication(String email) {
+    private void setAuthentication(String kakaoId) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
-        Authentication authentication = createAuthentication(email);
+        Authentication authentication = createAuthentication(kakaoId);
         context.setAuthentication(authentication);
-
         SecurityContextHolder.setContext(context);
     }
-
-    private Authentication createAuthentication(String email) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+    private Authentication createAuthentication(String kakaoId) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(kakaoId);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 }
