@@ -1,6 +1,6 @@
 package com.example.syncrowbackend.friendrequestroom.dto;
 
-import com.example.syncrowbackend.friendrequestroom.entity.FriendRequestPost;
+import com.example.syncrowbackend.friendrequestroom.entity.Post;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -30,7 +30,7 @@ public class FriendRequestPostDto {
     LocalDateTime modifiedAt;
 
     @Builder
-    public static FriendRequestPostDto toDto(FriendRequestPost post) {
+    public static FriendRequestPostDto toDto(Post post) {
         return FriendRequestPostDto.builder()
                 .id(post.getId())
                 .userId(post.getUser().getId())
