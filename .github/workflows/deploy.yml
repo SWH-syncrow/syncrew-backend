@@ -49,7 +49,7 @@ jobs:
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application-name: syncrew
+          application_name: syncrew
           environment_name: Syncrew-env-3
           version_label: github-action-${{steps.current-time.outputs.formattedTime}}
           region: ap-northeast-2
