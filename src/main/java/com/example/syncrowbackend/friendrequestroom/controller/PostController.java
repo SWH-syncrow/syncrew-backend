@@ -1,5 +1,6 @@
 package com.example.syncrowbackend.friendrequestroom.controller;
 
+import com.example.syncrowbackend.common.security.UserDetailsImpl;
 import com.example.syncrowbackend.friendrequestroom.dto.FriendRequestPostDto;
 import com.example.syncrowbackend.friendrequestroom.dto.PostRequestDto;
 import com.example.syncrowbackend.friendrequestroom.dto.PostDto;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,25 +25,24 @@ public class PostController {
     @Autowired
     private final PostService postService;
 
-    @PostMapping("/posts/{kakaoId}")
-    public ResponseEntity<Long> createPost(@PathVariable String kakaoId, @Valid @RequestBody PostRequestDto postDto) {
-        return ResponseEntity.ok(postService.createPost(kakaoId, postDto));
+    @PostMapping("/posts")
+    public ResponseEntity<Long> createPost(@Valid @RequestBody PostRequestDto postDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(postService.createPost(userDetails.getUser(), postDto));
     }
 
     @DeleteMapping("/posts/{postId}")
-    public ResponseEntity<Void> deletePost(String kakaoId, @PathVariable Long postId) {
-        postService.deletePost(kakaoId, postId);
+    public ResponseEntity<Void> deletePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        postService.deletePost(userDetails.getUser(), postId);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/user/posts")
-    public ResponseEntity<Page<PostDto>> searchAllPost(@PageableDefault(sort = "id",  direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(postService.searchAllPost(pageable));
-    }
-
-    @GetMapping("/user/posts")
-    public ResponseEntity<Page<PostDto>> searchByStatus(@RequestParam FriendRequestStatus status, @PageableDefault(sort = "id",  direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(postService.searchByStatus(status, pageable));
+    public ResponseEntity<Page<PostDto>> searchPostsByStatus(@RequestParam(required = false) FriendRequestStatus status, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        if (status != null) {
+            return ResponseEntity.ok(postService.searchByStatus(status, pageable));
+        } else {
+            return ResponseEntity.ok(postService.searchAllPost(pageable));
+        }
     }
 
     @GetMapping("/list/user/{kakaoId}")
