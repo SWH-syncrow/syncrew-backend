@@ -1,6 +1,6 @@
 package com.example.syncrowbackend.friendrequestroom.enums;
 
-public enum FriendRequestRoomStatus {
+public enum FriendRequestStatus {
     ACCEPTED,
     PROGRESS,
     CANCELED
