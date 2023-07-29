@@ -2,7 +2,15 @@ package com.example.syncrowbackend.friendrequestroom.entity;
 
 import com.example.syncrowbackend.user.entity.User;
 import jakarta.persistence.*;
+import lombok.*;
 
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Table(name = "user_group")
 public class UserGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -3,9 +3,16 @@ package com.example.syncrowbackend.friendrequestroom.entity;
 import com.example.syncrowbackend.friendrequestroom.enums.GroupCategory;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 
 import java.util.List;
-
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Table(name = "group_info")
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
