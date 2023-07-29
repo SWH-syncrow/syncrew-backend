@@ -1,6 +1,7 @@
 package com.example.syncrowbackend.friendrequestroom.dto;
 
 import com.example.syncrowbackend.friendrequestroom.enums.GroupCategory;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class GroupResponseDto {
     private Long id;
+    @NotBlank(message = "그룹 이름은 필요합니다.")
     private String name;
     private GroupCategory category;
     private Long memberCount;
