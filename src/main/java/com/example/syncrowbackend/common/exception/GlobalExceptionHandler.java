@@ -1,6 +1,6 @@
 package com.example.syncrowbackend.common.exception;
 
-import com.example.syncrowbackend.friendrequestroom.service.FriendRequestPostServiceImpl;
+import com.example.syncrowbackend.friendrequestroom.service.PostServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(FriendRequestPostServiceImpl.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(PostServiceImpl.class);
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ErrorResponseDto> handleCustomException(CustomException exception) {
