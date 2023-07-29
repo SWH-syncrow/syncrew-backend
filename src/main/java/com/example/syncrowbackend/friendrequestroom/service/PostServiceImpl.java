@@ -5,9 +5,11 @@ import com.example.syncrowbackend.common.exception.ErrorCode;
 import com.example.syncrowbackend.friendrequestroom.dto.FriendRequestPostDto;
 import com.example.syncrowbackend.friendrequestroom.dto.PostDto;
 import com.example.syncrowbackend.friendrequestroom.dto.PostRequestDto;
+import com.example.syncrowbackend.friendrequestroom.entity.FriendRequest;
 import com.example.syncrowbackend.friendrequestroom.entity.Group;
 import com.example.syncrowbackend.friendrequestroom.entity.Post;
 import com.example.syncrowbackend.friendrequestroom.enums.FriendRequestStatus;
+import com.example.syncrowbackend.friendrequestroom.repository.FriendRequestRepository;
 import com.example.syncrowbackend.friendrequestroom.repository.GroupRepository;
 import com.example.syncrowbackend.friendrequestroom.repository.PostRepository;
 import com.example.syncrowbackend.user.entity.User;
@@ -16,9 +18,13 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,11 +34,11 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final GroupRepository groupRepository;
+    private final FriendRequestRepository friendRequestRepository;
 
     @Override
-    public Long createPost(String kakaoId, PostRequestDto postDto) {
+    public Long createPost(User user, PostRequestDto postDto) {
         LOGGER.info("createPost service 호출됨");
-        User user = findUser(kakaoId);
         Group group = findGroup(postDto.getGroupId());
 
         Post post = Post.builder()
@@ -47,10 +53,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void deletePost(String kakaoId, Long postId) {
+    public void deletePost(User user, Long postId) {
         LOGGER.info("deletePost service 호출됨");
         Post post = findPost(postId);
-        User user = findUser(kakaoId);
         Long userId = post.getUser().getId();
         if (!userId.equals(user.getId())) {
             throw new CustomException(ErrorCode.PERMISSION_NOT_GRANTED_ERROR, "해당 게시글을 삭제할 수 있는 권한이 없습니다.");
@@ -70,18 +75,17 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public Page<PostDto> searchByStatus(FriendRequestStatus status, Pageable pageable) {
         LOGGER.info("searchByStatus service 호출됨");
-        Page<Post> postsByStatus = postRepository.findByGroupId_FriendRequestStatus(status, pageable);
+        Page<FriendRequest> friendRequests = friendRequestRepository.findByStatus(status, pageable);
 
-        return postsByStatus.map(post -> {
-            PostDto postDto = new PostDto();
-            postDto.setId(post.getId());
-            postDto.setTitle(post.getTitle());
-            postDto.setContent(post.getContent());
-            postDto.setUsername(post.getUser().getUsername());
-            postDto.setProfileImage(post.getUser().getProfileImage());
-            postDto.setTemp(0.0);
-            return postDto;
-        });
+        List<Post> posts = friendRequests.stream()
+                .map(FriendRequest::getPost)
+                .collect(Collectors.toList());
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), posts.size());
+        Page<Post> pagePosts = new PageImpl<>(posts.subList(start, end), pageable, posts.size());
+
+        return pagePosts.map(PostDto::toDto);
     }
 
     @Override
