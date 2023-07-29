@@ -37,7 +37,7 @@ public class PostDto {
                 .username(post.getUser().getUsername())
                 .title(post.getTitle())
                 .content(post.getContent())
-                .modifiedAt(LocalDateTime.now())
+                .modifiedAt(post.getModifiedAt())
                 .build();
     }
 }
