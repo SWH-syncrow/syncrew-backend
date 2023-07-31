@@ -25,10 +25,10 @@ public class AuthController {
 
     private final AuthServiceImpl authService;
 
-//    @GetMapping("/test")
-//    public String testApi(@RequestParam String code) {
-//        return authService.getKakaoToken(code);
-//    }
+    @GetMapping("/test")
+    public String testApi(@RequestParam String code) {
+        return authService.getKakaoToken(code);
+    }
 
     @DisableSwaggerSecurity
     @Operation(summary = "user login", description = "사용자 로그인")
