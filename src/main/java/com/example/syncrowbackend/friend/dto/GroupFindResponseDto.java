@@ -1,4 +1,4 @@
-package com.example.syncrowbackend.friendrequestroom.dto;
+package com.example.syncrowbackend.friend.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

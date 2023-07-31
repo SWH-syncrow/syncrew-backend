@@ -1,4 +1,4 @@
-package com.example.syncrowbackend.friendrequestroom.entity;
+package com.example.syncrowbackend.friend.entity;
 
 import com.example.syncrowbackend.user.entity.User;
 import jakarta.persistence.*;

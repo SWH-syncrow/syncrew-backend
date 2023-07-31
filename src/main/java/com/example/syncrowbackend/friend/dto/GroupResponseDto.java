@@ -1,6 +1,6 @@
-package com.example.syncrowbackend.friendrequestroom.dto;
+package com.example.syncrowbackend.friend.dto;
 
-import com.example.syncrowbackend.friendrequestroom.enums.GroupCategory;
+import com.example.syncrowbackend.friend.enums.GroupCategory;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

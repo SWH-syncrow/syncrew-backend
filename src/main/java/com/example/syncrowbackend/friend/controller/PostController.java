@@ -1,11 +1,11 @@
-package com.example.syncrowbackend.friendrequestroom.controller;
+package com.example.syncrowbackend.friend.controller;
 
 import com.example.syncrowbackend.common.security.UserDetailsImpl;
-import com.example.syncrowbackend.friendrequestroom.dto.FriendRequestPostDto;
-import com.example.syncrowbackend.friendrequestroom.dto.PostRequestDto;
-import com.example.syncrowbackend.friendrequestroom.dto.PostDto;
-import com.example.syncrowbackend.friendrequestroom.enums.FriendRequestStatus;
-import com.example.syncrowbackend.friendrequestroom.service.PostService;
+import com.example.syncrowbackend.friend.dto.FriendRequestPostDto;
+import com.example.syncrowbackend.friend.dto.PostRequestDto;
+import com.example.syncrowbackend.friend.dto.PostDto;
+import com.example.syncrowbackend.friend.enums.FriendRequestStatus;
+import com.example.syncrowbackend.friend.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public class PostController {
     }
 
     @GetMapping("/user/posts")
-    public ResponseEntity<Page<PostDto>> searchPostsByStatus(@RequestParam(required = false) FriendRequestStatus status, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<Page<PostDto>> searchPostsByStatus(@RequestParam(required = false) FriendRequestStatus status, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (status != null) {
             return ResponseEntity.ok(postService.searchByStatus(status, pageable));
         } else {

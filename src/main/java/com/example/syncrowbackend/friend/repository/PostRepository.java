@@ -1,6 +1,6 @@
-package com.example.syncrowbackend.friendrequestroom.repository;
+package com.example.syncrowbackend.friend.repository;
 
-import com.example.syncrowbackend.friendrequestroom.entity.Post;
+import com.example.syncrowbackend.friend.entity.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

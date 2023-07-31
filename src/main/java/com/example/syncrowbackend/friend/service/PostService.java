@@ -1,9 +1,9 @@
-package com.example.syncrowbackend.friendrequestroom.service;
+package com.example.syncrowbackend.friend.service;
 
-import com.example.syncrowbackend.friendrequestroom.dto.FriendRequestPostDto;
-import com.example.syncrowbackend.friendrequestroom.dto.PostRequestDto;
-import com.example.syncrowbackend.friendrequestroom.dto.PostDto;
-import com.example.syncrowbackend.friendrequestroom.enums.FriendRequestStatus;
+import com.example.syncrowbackend.friend.dto.FriendRequestPostDto;
+import com.example.syncrowbackend.friend.dto.PostRequestDto;
+import com.example.syncrowbackend.friend.dto.PostDto;
+import com.example.syncrowbackend.friend.enums.FriendRequestStatus;
 import com.example.syncrowbackend.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

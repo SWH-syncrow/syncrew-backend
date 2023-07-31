@@ -1,4 +1,4 @@
-package com.example.syncrowbackend.friendrequestroom.dto;
+package com.example.syncrowbackend.friend.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

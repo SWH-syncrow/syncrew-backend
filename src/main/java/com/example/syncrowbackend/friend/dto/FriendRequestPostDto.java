@@ -1,6 +1,6 @@
-package com.example.syncrowbackend.friendrequestroom.dto;
+package com.example.syncrowbackend.friend.dto;
 
-import com.example.syncrowbackend.friendrequestroom.entity.Post;
+import com.example.syncrowbackend.friend.entity.Post;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

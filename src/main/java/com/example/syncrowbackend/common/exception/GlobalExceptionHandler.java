@@ -1,6 +1,6 @@
 package com.example.syncrowbackend.common.exception;
 
-import com.example.syncrowbackend.friendrequestroom.service.PostServiceImpl;
+import com.example.syncrowbackend.friend.service.PostServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

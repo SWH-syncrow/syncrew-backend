@@ -1,4 +1,4 @@
-package com.example.syncrowbackend.friendrequestroom.enums;
+package com.example.syncrowbackend.friend.enums;
 
 public enum GroupCategory {
     SMARTPHONE,

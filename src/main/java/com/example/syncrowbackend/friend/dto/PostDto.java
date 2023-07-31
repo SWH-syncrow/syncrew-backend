@@ -1,6 +1,6 @@
-package com.example.syncrowbackend.friendrequestroom.dto;
+package com.example.syncrowbackend.friend.dto;
 
-import com.example.syncrowbackend.friendrequestroom.entity.Post;
+import com.example.syncrowbackend.friend.entity.Post;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -22,6 +23,7 @@ public class PostDto {
     private String username;
     private String profileImage;
     private Double temp;
+    private List<Integer> rejectedUsers;
 
     @Builder.Default
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -35,8 +37,24 @@ public class PostDto {
         return PostDto.builder()
                 .id(post.getId())
                 .username(post.getUser().getUsername())
+                .profileImage(post.getUser().getProfileImage())
+                .temp(post.getUser().getTemp())
                 .title(post.getTitle())
                 .content(post.getContent())
+                .modifiedAt(post.getModifiedAt())
+                .build();
+    }
+
+    @Builder
+    public static PostDto toDtoRej(Post post, List<Integer> rejectedUsers){
+        return PostDto.builder()
+                .id(post.getId())
+                .username(post.getUser().getUsername())
+                .profileImage(post.getUser().getProfileImage())
+                .temp(post.getUser().getTemp())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .rejectedUsers(rejectedUsers)
                 .modifiedAt(post.getModifiedAt())
                 .build();
     }
