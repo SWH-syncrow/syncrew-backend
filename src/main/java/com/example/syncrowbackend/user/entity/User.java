@@ -1,10 +1,14 @@
 package com.example.syncrowbackend.user.entity;
 
 import com.example.syncrowbackend.common.entity.BaseTimeEntity;
+import com.example.syncrowbackend.friend.entity.Post;
+import com.example.syncrowbackend.friend.entity.UserGroup;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -34,4 +38,11 @@ public class User extends BaseTimeEntity {
     private UserRole role;
 
     private Double temp;
+
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserGroup> userGroups;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Post> posts;
 }
