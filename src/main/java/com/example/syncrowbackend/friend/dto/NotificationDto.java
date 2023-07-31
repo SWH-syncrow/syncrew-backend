@@ -1,16 +1,15 @@
 package com.example.syncrowbackend.friend.dto;
 
-import com.example.syncrowbackend.friend.entity.FriendRequest;
 import com.example.syncrowbackend.friend.entity.Notification;
 import com.example.syncrowbackend.friend.enums.NotificationStatus;
-import com.example.syncrowbackend.user.entity.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.parameters.P;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class NotificationDto {
     private Long id;
