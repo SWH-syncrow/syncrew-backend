@@ -11,5 +11,5 @@ import lombok.Setter;
 public class FriendReactDto {
 
     @NotNull
-    private Long friendRequestId;
+    private Long notificationId;
 }

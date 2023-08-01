@@ -48,10 +48,12 @@ public class FriendServiceImpl implements FriendService {
     @Override
     @Transactional
     public void friendReact(FriendReaction reaction, FriendReactDto friendReactDto, User user) {
-        FriendRequest friendRequest = findFriendRequest(friendReactDto.getFriendRequestId());
+        Notification notification = findNotification(friendReactDto.getNotificationId());
+        FriendRequest friendRequest = notification.getFriendRequest();
 
-        if(!friendRequest.getPost().getUser().getId().equals(user.getId())) {
-            throw new CustomException(ErrorCode.FRIEND_REACT_WRONG_USER, "자신이 받은 친구 요청에 대해서만 수락 또는 거절할 수 있습니다.");
+        if (!notification.getUser().getId().equals(user.getId()) ||
+                notification.getStatus() != NotificationStatus.REQUESTED) {
+            throw new CustomException(ErrorCode.FRIEND_REACT_WRONG_USER, "수락 또는 거절할 수 없는 친구 신청입니다.");
         }
 
         if (friendRequest.getStatus() != FriendRequestStatus.PROGRESS) {
@@ -67,6 +69,8 @@ public class FriendServiceImpl implements FriendService {
             notificationRepository.save(new Notification(user, friendRequest, NotificationStatus.REFUSE));
             notificationRepository.save(new Notification(friendRequest.getRequestUser(), friendRequest, NotificationStatus.REFUSED));
         }
+
+        notificationRepository.delete(notification);
     }
 
     private Post findPost(Long id) {
@@ -74,8 +78,8 @@ public class FriendServiceImpl implements FriendService {
                 new CustomException(ErrorCode.POST_NOT_FOUND_ERROR, "해당 신청글이 존재하지 않습니다."));
     }
 
-    private FriendRequest findFriendRequest(Long id) {
-        return friendRequestRepository.findById(id).orElseThrow(() ->
-                new CustomException(ErrorCode.FRIEND_REQUEST_NOT_FOUND_ERROR, "해당 친구 신청이 존재하지 않습니다."));
+    private Notification findNotification(Long id) {
+        return notificationRepository.findById(id).orElseThrow(() ->
+                new CustomException(ErrorCode.NOTIFICATION_NOT_FOUND_ERROR, "해당 알림이 존재하지 않습니다."));
     }
 }
