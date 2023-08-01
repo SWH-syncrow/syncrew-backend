@@ -1,14 +1,13 @@
 package com.example.syncrowbackend.user.dto;
 
 import com.example.syncrowbackend.user.entity.User;
-import com.example.syncrowbackend.user.entity.UserRole;
-import lombok.Builder;
 import lombok.Getter;
-
-import java.time.LocalDateTime;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
-@Builder
+@Setter
+@NoArgsConstructor
 public class UserResponseDto {
     private Long id;
     private String username;
