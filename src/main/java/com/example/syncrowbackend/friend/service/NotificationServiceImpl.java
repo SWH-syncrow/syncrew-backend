@@ -32,7 +32,7 @@ public class NotificationServiceImpl implements NotificationService {
     public void readNotification(Long id, User user) {
         Notification notification = findNotification(id);
         if(!notification.getUser().getId().equals(user.getId())) {
-            throw new CustomException(ErrorCode.NOTIFICATION_WRONG_USER, "사용자의 알림만 읽을 수 있습니다.");
+            throw new CustomException(ErrorCode.NOTIFICATION_WRONG_USER, "사용자의 알림만 읽음 처리할 수 있습니다.");
         }
         notification.updateReadStatus();
     }

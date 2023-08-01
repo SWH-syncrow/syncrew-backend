@@ -20,8 +20,10 @@ public class Notification extends BaseTimeEntity {
     @ManyToOne
     private User user;
 
+    @Column(name = "\"read\"")
     private boolean read;
 
+    @Enumerated(EnumType.STRING)
     private NotificationStatus status;
 
     @ManyToOne
