@@ -29,16 +29,14 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Transactional
-    public void readNotification(Long id, User user) {
-        Notification notification = findNotification(id);
-        if(!notification.getUser().getId().equals(user.getId())) {
-            throw new CustomException(ErrorCode.NOTIFICATION_WRONG_USER, "사용자의 알림만 읽음 처리할 수 있습니다.");
-        }
-        notification.updateReadStatus();
-    }
+    public void readNotification(List<Long> ids, User user) {
+        List<Notification> notifications = notificationRepository.findByIdIn(ids);
 
-    private Notification findNotification(Long id) {
-        return notificationRepository.findById(id).orElseThrow(() ->
-                new CustomException(ErrorCode.NOTIFICATION_NOT_FOUND_ERROR, "해당 알림이 존재하지 않습니다."));
+        for (Notification notification : notifications) {
+            if (!notification.getUser().getId().equals(user.getId())) {
+                throw new CustomException(ErrorCode.NOTIFICATION_WRONG_USER, "사용자의 알림만 읽음 처리할 수 있습니다.");
+            }
+            notification.updateReadStatus();
+        }
     }
 }

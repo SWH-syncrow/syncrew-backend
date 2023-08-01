@@ -23,9 +23,9 @@ public class NotificationController {
         return ResponseEntity.ok(notifications);
     }
 
-    @PutMapping("/{notificationId}")
-    public ResponseEntity<Void> readNotification(@PathVariable Long notificationId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        notificationService.readNotification(notificationId, userDetails.getUser());
+    @PutMapping
+    public ResponseEntity<Void> readNotification(@RequestParam List<Long> ids, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        notificationService.readNotification(ids, userDetails.getUser());
         return ResponseEntity.ok().build();
     }
 }

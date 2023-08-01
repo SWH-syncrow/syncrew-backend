@@ -40,8 +40,8 @@ public class KakaoUserDto {
         return User.builder()
                 .kakaoId(id)
                 .username(properties.nickname)
-                .email(kakaoAccount.email != null ? kakaoAccount.email : "")
-                .profileImage(properties.profileImage != null ? properties.profileImage : "")
+                .email(kakaoAccount.email)
+                .profileImage(properties.profileImage)
                 .role(UserRole.USER)
                 .temp(36.5)
                 .build();
