@@ -19,13 +19,13 @@ public class FriendRequest extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "request_user_id", referencedColumnName = "id")
-    private User requestUserId;
+    @JoinColumn(name = "request_user_id")
+    private User requestUser;
 
     @ManyToOne
+    @JoinColumn(name = "post_id")
     private Post post;
 
     @Enumerated(EnumType.STRING)
     private FriendRequestStatus status;
-
 }
