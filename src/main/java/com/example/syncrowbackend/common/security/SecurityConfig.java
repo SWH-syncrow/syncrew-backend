@@ -2,6 +2,7 @@ package com.example.syncrowbackend.common.security;
 
 import com.example.syncrowbackend.common.jwt.JwtAuthenticationFilter;
 import com.example.syncrowbackend.common.jwt.TokenProvider;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,12 +19,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final ObjectMapper objectMapper;
     private final TokenProvider tokenProvider;
     private final UserDetailsServiceImpl userDetailsService;
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(tokenProvider, userDetailsService);
+        return new JwtAuthenticationFilter(objectMapper, tokenProvider, userDetailsService);
     }
 
     @Bean
