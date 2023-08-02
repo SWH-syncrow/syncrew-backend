@@ -59,6 +59,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private boolean tokenRequired(HttpServletRequest request) {
-        return !request.getRequestURI().startsWith("/api/auth") || request.getRequestURI().endsWith("/logout");
+        String url = request.getRequestURI();
+        log.info("Requested URL : {}", url);
+        return !(url.equals("/") || url.equals("/api/auth/login") || url.equals("/api/auth/reissue"));
     }
 }
