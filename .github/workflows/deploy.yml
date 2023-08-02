@@ -1,9 +1,10 @@
-name: CD
+name: syncrew
 
 on:
   push:
     branches:
       - dev
+  workflow_dispatch:
 
 env:
   S3_BUCKET_NAME: syncrew-bucket
@@ -21,8 +22,8 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
           java-version: '17'
+          distribution: 'temurin'
 
       - name: make application.properties
         run:
