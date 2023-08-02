@@ -18,6 +18,7 @@ public class FriendRequest extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
     @JoinColumn(name = "request_user_id")
     private User requestUser;
 
