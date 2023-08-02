@@ -44,18 +44,4 @@ public class PostDto {
                 .modifiedAt(post.getModifiedAt())
                 .build();
     }
-
-    @Builder
-    public static PostDto toDtoRej(Post post, List<Integer> rejectedUsers){
-        return PostDto.builder()
-                .id(post.getId())
-                .username(post.getUser().getUsername())
-                .profileImage(post.getUser().getProfileImage())
-                .temp(post.getUser().getTemp())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .rejectedUsers(rejectedUsers)
-                .modifiedAt(post.getModifiedAt())
-                .build();
-    }
 }

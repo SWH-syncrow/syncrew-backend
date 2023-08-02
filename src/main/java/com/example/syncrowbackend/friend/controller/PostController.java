@@ -1,9 +1,7 @@
 package com.example.syncrowbackend.friend.controller;
 
 import com.example.syncrowbackend.common.security.UserDetailsImpl;
-import com.example.syncrowbackend.friend.dto.FriendRequestPostDto;
-import com.example.syncrowbackend.friend.dto.PostRequestDto;
-import com.example.syncrowbackend.friend.dto.PostDto;
+import com.example.syncrowbackend.friend.dto.*;
 import com.example.syncrowbackend.friend.enums.FriendRequestStatus;
 import com.example.syncrowbackend.friend.service.PostService;
 import jakarta.validation.Valid;
@@ -36,13 +34,13 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
+    // 로그인한 사용자가 쓴 친구신청 post
+    // (status) 로그인한 사용자가 신청 넣은 친구신청 post 정보
     @GetMapping("/user/posts")
-    public ResponseEntity<Page<PostDto>> searchPostsByStatus(@RequestParam(required = false) FriendRequestStatus status, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        if (status != null) {
-            return ResponseEntity.ok(postService.searchByStatus(status, pageable));
-        } else {
-            return ResponseEntity.ok(postService.searchAllPost(pageable));
-        }
+    public ResponseEntity<Page<GetUserResponseDto>> getPostByCurrentUser(@RequestParam(required = false) FriendRequestStatus status, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return status==null ?
+                ResponseEntity.ok(postService.getFriendRequestsByCurrentUser(userDetails.getUser(), pageable)) :
+                ResponseEntity.ok(postService.getReceivedFriendRequestsByCurrentUser(userDetails.getUser(), status, pageable));
     }
 
     @GetMapping("/list/user/{kakaoId}")
