@@ -34,21 +34,6 @@ public class AuthServiceImpl implements AuthService {
     @Value("${kakao.client-id}")
     private String CLIENT_ID;
 
-    public String getKakaoToken(String code) {
-        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("grant_type", "authorization_code");
-        body.add("client_id", CLIENT_ID);
-        body.add("redirect_uri", "http://localhost:8080/api/auth/test");
-        body.add("code", code);
-
-        return webClient.post()
-                .uri("https://kauth.kakao.com/oauth/token")
-                .bodyValue(body)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-    }
-
     @Override
     @Transactional
     public LoginResponseDto login(LoginRequestDto requestDto) {
@@ -77,6 +62,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public TokenResponseDto reissue(ReissueRequestDto requestDto) {
         String refreshToken = requestDto.getRefreshToken();
         if (!tokenProvider.validateToken(refreshToken)) {
@@ -93,6 +79,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public void logout(HttpServletRequest request, User user) {
         String accessToken = tokenProvider.resolveToken(request);
         if (!StringUtils.hasText(accessToken)) {
@@ -102,8 +89,25 @@ public class AuthServiceImpl implements AuthService {
         redisUtil.setBlackList(accessToken, "accessToken");
     }
 
+    @Override
+    @Transactional
     public UserResponseDto getUser(User user) {
         return new UserResponseDto(user, isTestTarget(user));
+    }
+
+    public String getKakaoToken(String code) {
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("grant_type", "authorization_code");
+        body.add("client_id", CLIENT_ID);
+        body.add("redirect_uri", "http://localhost:8080/api/auth/test");
+        body.add("code", code);
+
+        return webClient.post()
+                .uri("https://kauth.kakao.com/oauth/token")
+                .bodyValue(body)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
     }
 
     private KakaoUserDto getKakaoUser(String accessToken) {
