@@ -26,8 +26,9 @@ public class AuthController {
     private final AuthServiceImpl authService;
 
     @GetMapping("/test")
-    public String testApi(@RequestParam String code) {
-        return authService.getKakaoToken(code);
+    public ResponseEntity<String> testApi(@RequestParam String code) {
+        String kakaoToken = authService.getKakaoToken(code);
+        return ResponseEntity.ok(kakaoToken);
     }
 
     @DisableSwaggerSecurity
