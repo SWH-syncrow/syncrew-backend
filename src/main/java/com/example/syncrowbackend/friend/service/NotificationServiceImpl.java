@@ -34,7 +34,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         for (Notification notification : notifications) {
             if (!notification.getUser().getId().equals(user.getId())) {
-                throw new CustomException(ErrorCode.NOTIFICATION_WRONG_USER, "사용자의 알림만 읽음 처리할 수 있습니다.");
+                throw new CustomException(ErrorCode.PERMISSION_NOT_GRANTED_ERROR, "사용자의 알림만 읽음 처리할 수 있습니다.");
             }
             notification.updateReadStatus();
         }

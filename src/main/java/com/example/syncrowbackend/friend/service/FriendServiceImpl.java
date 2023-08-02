@@ -30,7 +30,7 @@ public class FriendServiceImpl implements FriendService {
     @Transactional
     public void friendRequest(FriendRequestDto requestDto, User user) {
         if (!requestDto.getUserId().equals(user.getId())) {
-            throw new CustomException(ErrorCode.FRIEND_REQUEST_WRONG_USER, "로그인한 사용자와 일치하지 않는 user id 입니다.");
+            throw new CustomException(ErrorCode.PERMISSION_NOT_GRANTED_ERROR, "로그인한 사용자와 일치하지 않는 user id 입니다.");
         }
 
         Post post = findPost(requestDto.getPostId());
@@ -51,11 +51,11 @@ public class FriendServiceImpl implements FriendService {
         FriendRequest friendRequest = findFriendRequest(friendReactDto.getFriendRequestId());
 
         if (!friendRequest.getPost().getUser().getId().equals(user.getId())) {
-            throw new CustomException(ErrorCode.FRIEND_REACT_WRONG_USER, "자신이 받은 친구 요청에 대해서만 수락 또는 거절할 수 있습니다.");
+            throw new CustomException(ErrorCode.PERMISSION_NOT_GRANTED_ERROR, "자신이 받은 친구 요청에 대해서만 수락 또는 거절할 수 있습니다.");
         }
 
         if (friendRequest.getStatus() != FriendRequestStatus.PROGRESS) {
-            throw new CustomException(ErrorCode.FRIEND_REQUEST_ALREADY_REACTED, "이미 수락 또는 거절한 친구 신청입니다.");
+            throw new CustomException(ErrorCode.ALREADY_REACTED_FRIEND_REQUEST, "이미 수락 또는 거절한 친구 신청입니다.");
         }
 
         if (reaction == FriendReaction.ACCEPT) {
