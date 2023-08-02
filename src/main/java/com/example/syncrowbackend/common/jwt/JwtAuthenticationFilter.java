@@ -61,6 +61,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private boolean tokenRequired(HttpServletRequest request) {
         String url = request.getRequestURI();
         log.info("Requested URL : {}", url);
-        return !(url.equals("/") || url.equals("/api/auth/login") || url.equals("/api/auth/reissue"));
+        return !(url.equals("/") || url.equals("/api/auth/login") || url.equals("/api/auth/reissue") || url.equals("/api/auth/test"));
     }
 }
