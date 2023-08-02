@@ -12,4 +12,6 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, Lo
     Page<FriendRequest> findByStatus(FriendRequestStatus status, Pageable pageable);
     // Page<FriendRequest> findByRequestUserIdAndStatus(Long userId, FriendRequestStatus status, Pageable pageable);
     boolean existsByRequestUserAndPost(User requestUser, Post post);
+
+    Page<FriendRequest> findByRequestUserAndStatus(User requestUser, FriendRequestStatus status, Pageable pageable);
 }

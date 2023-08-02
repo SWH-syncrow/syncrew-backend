@@ -2,9 +2,7 @@ package com.example.syncrowbackend.friend.service;
 
 import com.example.syncrowbackend.common.exception.CustomException;
 import com.example.syncrowbackend.common.exception.ErrorCode;
-import com.example.syncrowbackend.friend.dto.FriendRequestPostDto;
-import com.example.syncrowbackend.friend.dto.PostDto;
-import com.example.syncrowbackend.friend.dto.PostRequestDto;
+import com.example.syncrowbackend.friend.dto.*;
 import com.example.syncrowbackend.friend.entity.FriendRequest;
 import com.example.syncrowbackend.friend.entity.Group;
 import com.example.syncrowbackend.friend.entity.Post;
@@ -67,27 +65,30 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<PostDto> searchAllPost(Pageable pageable) {
-        LOGGER.info("searchAllPost service 호출됨");
-        Page<Post> postsPage = postRepository.findAll(pageable);
-        return postsPage.map(PostDto::toDto);
+    public Page<GetUserResponseDto> getFriendRequestsByCurrentUser(User user, Pageable pageable) {
+        LOGGER.info("getFriendRequestsByCurrentUser service 호출됨");
+        /* 로그인한 사용자가 쓴 친구신청 post */
+        Page<Post> posts = postRepository.findByUserId(user.getId(), pageable);
+        return posts.map(GetUserResponseDto::toDto);
     }
 
     @Override
     @Transactional
-    public Page<PostDto> searchByStatus(FriendRequestStatus status, Pageable pageable) {
-        LOGGER.info("searchByStatus service 호출됨");
-        Page<FriendRequest> friendRequests = friendRequestRepository.findByStatus(status, pageable);
+    public Page<GetUserResponseDto> getReceivedFriendRequestsByCurrentUser(User user, FriendRequestStatus status, Pageable pageable) {
+        LOGGER.info("getReceivedFriendRequestsByCurrentUser service 호출됨");
+        /* 로그인한 사용자가 신청넣은 친구신청 post 정보 */
+        Page<FriendRequest> friendRequests = friendRequestRepository.findByRequestUserAndStatus(user, status, pageable);
 
-        List<Post> posts = friendRequests.stream()
-                .map(FriendRequest::getPost)
-                .collect(Collectors.toList());
+        List<GetUserResponseDto> getUserResponseDtos = friendRequests.getContent().stream()
+                .map(friendRequest -> {
+                    Post post = friendRequest.getPost();
+                    if (post == null) {
+                        throw new CustomException(ErrorCode.POST_NOT_FOUND_ERROR, "해당 게시글을 찾을 수 없습니다.");
+                    }
+                    return GetUserResponseDto.toDto(post);
+                }).collect(Collectors.toList());
 
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), posts.size());
-        Page<Post> pagePosts = new PageImpl<>(posts.subList(start, end), pageable, posts.size());
-
-        return pagePosts.map(PostDto::toDto);
+        return new PageImpl<>(getUserResponseDtos, pageable, friendRequests.getTotalElements());
     }
 
     @Override

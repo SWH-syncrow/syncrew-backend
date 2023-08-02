@@ -18,11 +18,11 @@ public class FriendRequest extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "request_user_id", referencedColumnName = "id")
+    @JoinColumn(name = "request_user_id")
     private User requestUser;
 
     @ManyToOne
+    @JoinColumn(name = "post_id")
     private Post post;
 
     @Enumerated(EnumType.STRING)
