@@ -18,7 +18,6 @@ public class FriendRequest extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
     @JoinColumn(name = "request_user_id")
     private User requestUser;
 
@@ -28,4 +27,18 @@ public class FriendRequest extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     private FriendRequestStatus status;
+
+    public FriendRequest(User user, Post post) {
+        this.requestUser = user;
+        this.post = post;
+        this.status = FriendRequestStatus.PROGRESS;
+    }
+
+    public void accepted() {
+        this.status = FriendRequestStatus.ACCEPTED;
+    }
+
+    public void refused() {
+        this.status = FriendRequestStatus.REFUSED;
+    }
 }

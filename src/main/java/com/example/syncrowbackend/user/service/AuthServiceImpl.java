@@ -62,15 +62,16 @@ public class AuthServiceImpl implements AuthService {
             User newUser = kakaoUser.toEntity();
             userRepository.save(newUser);
             return LoginResponseDto.builder()
-                    .user(UserResponseDto.toDto(newUser))
+                    .user(new UserResponseDto(newUser, true))
                     .token(tokenProvider.issueToken(newUser))
                     .isNewUser(Boolean.TRUE)
                     .build();
         }
 
+        User oldUser = user.get();
         return LoginResponseDto.builder()
-                .user(UserResponseDto.toDto(user.get()))
-                .token(tokenProvider.issueToken(user.get()))
+                .user(new UserResponseDto(oldUser, isTestTarget(oldUser)))
+                .token(tokenProvider.issueToken(oldUser))
                 .isNewUser(Boolean.FALSE)
                 .build();
     }
@@ -101,6 +102,10 @@ public class AuthServiceImpl implements AuthService {
         redisUtil.setBlackList(accessToken, "accessToken");
     }
 
+    public UserResponseDto getUser(User user) {
+        return new UserResponseDto(user, isTestTarget(user));
+    }
+
     private KakaoUserDto getKakaoUser(String accessToken) {
         return webClient.get()
                 .uri("https://kapi.kakao.com/v2/user/me")
@@ -117,7 +122,7 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND_ERROR, "해당 사용자가 존재하지 않습니다."));
     }
 
-    public UserResponseDto getUser(User user) {
-        return UserResponseDto.toDto(user);
+    private boolean isTestTarget(User user) {
+        return user.getUserGroups().size() == 0;
     }
 }
