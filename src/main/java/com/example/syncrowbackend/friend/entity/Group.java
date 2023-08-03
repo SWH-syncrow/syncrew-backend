@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "`group`")
+@Table(name = "group")
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,10 +24,10 @@ public class Group {
     @Enumerated(EnumType.STRING)
     private GroupCategory category;
 
-    @OneToMany(mappedBy = "`group`")
+    @OneToMany(mappedBy = "group")
     private List<Post> posts;
 
-    @OneToMany(mappedBy = "`group`")
+    @OneToMany(mappedBy = "group")
     private List<UserGroup> userGroups;
 }
 
