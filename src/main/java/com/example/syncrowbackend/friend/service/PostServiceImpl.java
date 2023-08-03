@@ -39,6 +39,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Long createPost(User user, PostRequestDto postDto) {
         LOGGER.info("createPost service 호출됨");
+        // groupId가 현재 로그인한 user가 참여중인 그룹인지 검증
         Group group = findGroup(postDto.getGroupId());
 
         Post post = Post.builder()
