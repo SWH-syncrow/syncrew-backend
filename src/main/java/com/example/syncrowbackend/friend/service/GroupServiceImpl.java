@@ -15,7 +15,6 @@ import com.example.syncrowbackend.friend.repository.GroupRepository;
 import com.example.syncrowbackend.friend.repository.PostRepository;
 import com.example.syncrowbackend.friend.repository.UserGroupRepository;
 import com.example.syncrowbackend.user.entity.User;
-import com.example.syncrowbackend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +79,7 @@ public class GroupServiceImpl implements GroupService{
                 throw new CustomException(ErrorCode.USER_NOT_FOUND_ERROR, "해당 작성자를 찾을 수 없습니다.");
             }
 
-            Page<FriendRequest> friendRequests = friendRequestRepository.findByPostId(post.getId());
+            Page<FriendRequest> friendRequests = friendRequestRepository.findByPostId(post.getId(), pageable);
             List<Long> rejectedUsers = new ArrayList<>();
 
             for (FriendRequest friendRequest : friendRequests) {
