@@ -12,18 +12,22 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "group_info")
+@Table(name = "`group`")
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
-    private List<UserGroup> userGroups;
 
     @NotBlank
     private String name;
 
     @Enumerated(EnumType.STRING)
     private GroupCategory category;
+
+    @OneToMany(mappedBy = "`group`")
+    private List<Post> posts;
+
+    @OneToMany(mappedBy = "`group`")
+    private List<UserGroup> userGroups;
 }
+
