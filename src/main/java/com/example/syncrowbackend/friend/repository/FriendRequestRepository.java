@@ -9,9 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FriendRequestRepository extends JpaRepository<FriendRequest, Long> {
-    Page<FriendRequest> findByStatus(FriendRequestStatus status, Pageable pageable);
-    // Page<FriendRequest> findByRequestUserIdAndStatus(Long userId, FriendRequestStatus status, Pageable pageable);
+    Page<FriendRequest> findByPostId(Long postId);
     boolean existsByRequestUserAndPost(User requestUser, Post post);
-
     Page<FriendRequest> findByRequestUserAndStatus(User requestUser, FriendRequestStatus status, Pageable pageable);
+
 }

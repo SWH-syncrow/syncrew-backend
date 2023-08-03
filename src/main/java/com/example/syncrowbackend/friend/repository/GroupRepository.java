@@ -11,5 +11,4 @@ import java.util.Optional;
 public interface GroupRepository extends JpaRepository<Group, Long> {
     Page<Group> findByCategory(GroupCategory category, Pageable pageable);
     Optional<Group> findById(Long id);
-
 }
