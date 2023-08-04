@@ -29,11 +29,15 @@ public class FriendServiceImpl implements FriendService {
     @Override
     @Transactional
     public void friendRequest(FriendRequestDto requestDto, User user) {
+        Post post = findPost(requestDto.getPostId());
+
         if (!requestDto.getUserId().equals(user.getId())) {
             throw new CustomException(ErrorCode.PERMISSION_NOT_GRANTED_ERROR, "로그인한 사용자와 일치하지 않는 user id 입니다.");
         }
 
-        Post post = findPost(requestDto.getPostId());
+        if (post.getUser().getId().equals(user.getId())) {
+            throw new CustomException(ErrorCode.PERMISSION_NOT_GRANTED_ERROR, "자기 자신에게 친구 신청할 수 없습니다.");
+        }
 
         if (friendRequestRepository.existsByRequestUserAndPost(user, post)) {
             throw new CustomException(ErrorCode.DUPLICATED_FRIEND_REQUEST, "친구 요청은 중복 불가합니다.");
