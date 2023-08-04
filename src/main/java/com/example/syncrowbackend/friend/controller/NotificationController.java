@@ -1,6 +1,6 @@
 package com.example.syncrowbackend.friend.controller;
 
-import com.example.syncrowbackend.common.security.UserDetailsImpl;
+import com.example.syncrowbackend.auth.security.UserDetailsImpl;
 import com.example.syncrowbackend.friend.dto.NotificationDto;
 import com.example.syncrowbackend.friend.service.NotificationServiceImpl;
 import lombok.RequiredArgsConstructor;

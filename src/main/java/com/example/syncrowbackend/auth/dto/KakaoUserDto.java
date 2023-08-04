@@ -1,7 +1,7 @@
-package com.example.syncrowbackend.user.dto;
+package com.example.syncrowbackend.auth.dto;
 
-import com.example.syncrowbackend.user.entity.User;
-import com.example.syncrowbackend.user.entity.UserRole;
+import com.example.syncrowbackend.auth.entity.User;
+import com.example.syncrowbackend.auth.entity.UserRole;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;

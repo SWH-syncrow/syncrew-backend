@@ -1,8 +1,8 @@
-package com.example.syncrowbackend.common.jwt;
+package com.example.syncrowbackend.auth.jwt;
 
 import com.example.syncrowbackend.common.redis.RedisUtil;
-import com.example.syncrowbackend.user.entity.User;
-import com.example.syncrowbackend.user.entity.UserRole;
+import com.example.syncrowbackend.auth.entity.User;
+import com.example.syncrowbackend.auth.entity.UserRole;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;

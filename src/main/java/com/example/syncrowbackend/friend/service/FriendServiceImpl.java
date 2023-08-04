@@ -13,7 +13,7 @@ import com.example.syncrowbackend.friend.enums.NotificationStatus;
 import com.example.syncrowbackend.friend.repository.FriendRequestRepository;
 import com.example.syncrowbackend.friend.repository.NotificationRepository;
 import com.example.syncrowbackend.friend.repository.PostRepository;
-import com.example.syncrowbackend.user.entity.User;
+import com.example.syncrowbackend.auth.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

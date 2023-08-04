@@ -1,4 +1,4 @@
-package com.example.syncrowbackend.user.entity;
+package com.example.syncrowbackend.auth.entity;
 
 public enum UserRole {
     USER(Authority.USER),

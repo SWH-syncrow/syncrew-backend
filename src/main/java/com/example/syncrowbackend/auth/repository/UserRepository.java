@@ -1,6 +1,6 @@
-package com.example.syncrowbackend.user.repository;
+package com.example.syncrowbackend.auth.repository;
 
-import com.example.syncrowbackend.user.entity.User;
+import com.example.syncrowbackend.auth.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

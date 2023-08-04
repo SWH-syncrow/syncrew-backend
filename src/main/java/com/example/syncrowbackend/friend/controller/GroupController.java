@@ -1,12 +1,11 @@
 package com.example.syncrowbackend.friend.controller;
 
-import com.example.syncrowbackend.common.security.UserDetailsImpl;
+import com.example.syncrowbackend.auth.security.UserDetailsImpl;
 import com.example.syncrowbackend.friend.dto.GetGroupPostsResponseDto;
 import com.example.syncrowbackend.friend.dto.GetGroupsResponseDto;
 import com.example.syncrowbackend.friend.enums.GroupCategory;
 import com.example.syncrowbackend.friend.service.GroupService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -15,12 +14,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class GroupController {
 
-    @Autowired
     private final GroupService groupService;
 
     @PostMapping("/groups/{groupId}/enter")
@@ -29,8 +29,8 @@ public class GroupController {
     }
 
     @GetMapping("/groups")
-    public ResponseEntity<Page<GetGroupsResponseDto>> getGroupsByCategory(@RequestParam GroupCategory category, Pageable pageable) {
-        return ResponseEntity.ok(groupService.getGroupsByCategory(category, pageable));
+    public ResponseEntity<List<GetGroupsResponseDto>> getGroupsByCategory(@RequestParam(required = false) GroupCategory category) {
+        return ResponseEntity.ok(groupService.getGroupsByCategory(category));
     }
 
     @GetMapping("/groups/{groupId}")
@@ -39,12 +39,15 @@ public class GroupController {
     }
 
     @GetMapping("/groups/{groupId}/posts")
-    public ResponseEntity<Page<GetGroupPostsResponseDto>> getGroupsByDesiredSize(@PathVariable Long groupId, @RequestParam Integer page, @RequestParam Integer limit, Pageable pageable) {
-        return ResponseEntity.ok(groupService.getGroupsByDesiredSize(groupId, page, limit, pageable));
+    public ResponseEntity<Page<GetGroupPostsResponseDto>> getGroupPostsByDesiredSize(
+            @PathVariable Long groupId,
+            @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return ResponseEntity.ok(groupService.getGroupPostsByDesiredSize(groupId, pageable));
     }
 
     @GetMapping("/user/groups")
-    public ResponseEntity<Page<GetGroupsResponseDto>> getParticipatingGroups(@AuthenticationPrincipal UserDetailsImpl userDetails, @PageableDefault(sort = "id",  direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(groupService.getParticipatingGroups(userDetails.getUser(), pageable));
+    public ResponseEntity<List<GetGroupsResponseDto>> getParticipatingGroups(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(groupService.getParticipatingGroups(userDetails.getUser()));
     }
 }

@@ -1,4 +1,4 @@
-package com.example.syncrowbackend.user.dto;
+package com.example.syncrowbackend.auth.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

@@ -1,7 +1,7 @@
 package com.example.syncrowbackend.friend.entity;
 
 import com.example.syncrowbackend.common.entity.BaseTimeEntity;
-import com.example.syncrowbackend.user.entity.User;
+import com.example.syncrowbackend.auth.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

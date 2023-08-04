@@ -1,13 +1,13 @@
-package com.example.syncrowbackend.user.service;
+package com.example.syncrowbackend.auth.service;
 
 import com.example.syncrowbackend.common.exception.CustomException;
 import com.example.syncrowbackend.common.exception.ErrorCode;
-import com.example.syncrowbackend.common.jwt.TokenProvider;
-import com.example.syncrowbackend.common.jwt.TokenResponseDto;
+import com.example.syncrowbackend.auth.jwt.TokenProvider;
+import com.example.syncrowbackend.auth.jwt.TokenResponseDto;
 import com.example.syncrowbackend.common.redis.RedisUtil;
-import com.example.syncrowbackend.user.dto.*;
-import com.example.syncrowbackend.user.entity.User;
-import com.example.syncrowbackend.user.repository.UserRepository;
+import com.example.syncrowbackend.auth.dto.*;
+import com.example.syncrowbackend.auth.entity.User;
+import com.example.syncrowbackend.auth.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

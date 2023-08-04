@@ -1,12 +1,11 @@
 package com.example.syncrowbackend.friend.controller;
 
-import com.example.syncrowbackend.common.security.UserDetailsImpl;
+import com.example.syncrowbackend.auth.security.UserDetailsImpl;
 import com.example.syncrowbackend.friend.dto.*;
 import com.example.syncrowbackend.friend.enums.FriendRequestStatus;
 import com.example.syncrowbackend.friend.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PostController {
 
-    @Autowired
     private final PostService postService;
 
     @PostMapping("/posts")

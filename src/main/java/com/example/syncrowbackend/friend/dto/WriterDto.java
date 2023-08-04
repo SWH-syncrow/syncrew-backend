@@ -1,6 +1,6 @@
 package com.example.syncrowbackend.friend.dto;
 
-import com.example.syncrowbackend.user.entity.User;
+import com.example.syncrowbackend.auth.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

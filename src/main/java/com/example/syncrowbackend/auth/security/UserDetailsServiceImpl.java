@@ -1,7 +1,7 @@
-package com.example.syncrowbackend.common.security;
+package com.example.syncrowbackend.auth.security;
 
-import com.example.syncrowbackend.user.entity.User;
-import com.example.syncrowbackend.user.repository.UserRepository;
+import com.example.syncrowbackend.auth.entity.User;
+import com.example.syncrowbackend.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

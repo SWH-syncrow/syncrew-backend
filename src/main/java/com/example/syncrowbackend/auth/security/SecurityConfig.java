@@ -1,7 +1,7 @@
-package com.example.syncrowbackend.common.security;
+package com.example.syncrowbackend.auth.security;
 
-import com.example.syncrowbackend.common.jwt.JwtAuthenticationFilter;
-import com.example.syncrowbackend.common.jwt.TokenProvider;
+import com.example.syncrowbackend.auth.jwt.JwtAuthenticationFilter;
+import com.example.syncrowbackend.auth.jwt.TokenProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -41,7 +41,8 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.OPTIONS).permitAll()
                             .requestMatchers("/api-docs/**", "swagger*/**").permitAll()
                             .requestMatchers("/").permitAll()
-                            .requestMatchers("/api/auth/**").permitAll()
+                            .requestMatchers("/api/auth/login", "/api/auth/reissue", "/api/auth/test").permitAll()
+                            .requestMatchers("/api/groups").permitAll()
                             .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

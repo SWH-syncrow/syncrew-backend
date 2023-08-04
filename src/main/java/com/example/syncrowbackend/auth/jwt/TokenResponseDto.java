@@ -1,4 +1,4 @@
-package com.example.syncrowbackend.common.jwt;
+package com.example.syncrowbackend.auth.jwt;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
