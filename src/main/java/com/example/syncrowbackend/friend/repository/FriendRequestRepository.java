@@ -14,7 +14,7 @@ import java.util.List;
 @Repository
 public interface FriendRequestRepository extends JpaRepository<FriendRequest, Long> {
     boolean existsByRequestUserAndPost(User requestUser, Post post);
-    Page<FriendRequest> findByRequestUserAndStatus(User requestUser, FriendRequestStatus status, Pageable pageable);
     List<FriendRequest> findByPostAndStatus(Post post, FriendRequestStatus friendRequestStatus);
     boolean existsByPostAndStatusIn(Post post, List<FriendRequestStatus> statuses);
+    Page<FriendRequest> findByRequestUserAndStatusIn(User user, List<FriendRequestStatus> includedStatuses, Pageable pageable);
 }
