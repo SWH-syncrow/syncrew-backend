@@ -33,6 +33,11 @@ public class GroupController {
         return ResponseEntity.ok(groupService.getGroupsByCategory(category, pageable));
     }
 
+    @GetMapping("/groups/{groupId}")
+    public ResponseEntity<GetGroupsResponseDto> getGroups(@PathVariable Long groupId){
+        return ResponseEntity.ok(groupService.getGroups(groupId));
+    }
+
     @GetMapping("/groups/{groupId}/posts")
     public ResponseEntity<Page<GetGroupPostsResponseDto>> getGroupsByDesiredSize(@PathVariable Long groupId, @RequestParam Integer page, @RequestParam Integer limit, Pageable pageable) {
         return ResponseEntity.ok(groupService.getGroupsByDesiredSize(groupId, page, limit, pageable));
