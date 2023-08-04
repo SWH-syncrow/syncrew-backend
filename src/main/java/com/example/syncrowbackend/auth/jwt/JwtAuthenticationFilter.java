@@ -31,20 +31,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (tokenRequired(request)) {
-            String token = tokenProvider.resolveToken(request);
-            if (StringUtils.hasText(token) && tokenProvider.validateToken(token)) {
-                Claims claims = tokenProvider.getClaims(token);
-                setAuthentication(claims.getSubject());
-            } else {
+        String token = tokenProvider.resolveToken(request);
+        if (StringUtils.hasText(token)) {
+            if (!tokenProvider.validateToken(token)) {
                 ErrorResponseDto responseDto = new ErrorResponseDto(ErrorCode.AUTHENTICATION_FAILED, "인증 토큰이 올바른지 확인해주세요.");
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setContentType("application/json; charset=UTF-8");
                 response.getWriter().write(objectMapper.writeValueAsString(responseDto));
                 return;
             }
+            Claims claims = tokenProvider.getClaims(token);
+            setAuthentication(claims.getSubject());
         }
-        filterChain.doFilter(request, response);
+        filterChain.doFilter(request,response);
     }
 
     private void setAuthentication(String kakaoId) {
@@ -53,14 +52,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         context.setAuthentication(authentication);
         SecurityContextHolder.setContext(context);
     }
+
     private Authentication createAuthentication(String kakaoId) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(kakaoId);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-    }
-
-    private boolean tokenRequired(HttpServletRequest request) {
-        String url = request.getRequestURI();
-        log.info("Requested URL : {}", url);
-        return !(url.equals("/") || url.equals("/api/auth/login") || url.equals("/api/auth/reissue") || url.equals("/api/auth/test"));
     }
 }
