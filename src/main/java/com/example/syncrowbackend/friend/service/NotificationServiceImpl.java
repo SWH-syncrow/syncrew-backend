@@ -5,7 +5,7 @@ import com.example.syncrowbackend.common.exception.ErrorCode;
 import com.example.syncrowbackend.friend.dto.NotificationDto;
 import com.example.syncrowbackend.friend.entity.Notification;
 import com.example.syncrowbackend.friend.repository.NotificationRepository;
-import com.example.syncrowbackend.user.entity.User;
+import com.example.syncrowbackend.auth.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

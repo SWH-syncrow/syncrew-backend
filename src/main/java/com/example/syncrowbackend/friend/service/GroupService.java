@@ -2,7 +2,7 @@ package com.example.syncrowbackend.friend.service;
 
 import com.example.syncrowbackend.friend.dto.*;
 import com.example.syncrowbackend.friend.enums.GroupCategory;
-import com.example.syncrowbackend.user.entity.User;
+import com.example.syncrowbackend.auth.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

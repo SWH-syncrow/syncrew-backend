@@ -2,7 +2,7 @@ package com.example.syncrowbackend.friend.repository;
 
 import com.example.syncrowbackend.friend.entity.Group;
 import com.example.syncrowbackend.friend.entity.UserGroup;
-import com.example.syncrowbackend.user.entity.User;
+import com.example.syncrowbackend.auth.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

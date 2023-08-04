@@ -1,13 +1,13 @@
-package com.example.syncrowbackend.user.controller;
+package com.example.syncrowbackend.auth.controller;
 
 import com.example.syncrowbackend.common.config.DisableSwaggerSecurity;
-import com.example.syncrowbackend.common.jwt.TokenResponseDto;
-import com.example.syncrowbackend.common.security.UserDetailsImpl;
-import com.example.syncrowbackend.user.dto.LoginRequestDto;
-import com.example.syncrowbackend.user.dto.LoginResponseDto;
-import com.example.syncrowbackend.user.dto.ReissueRequestDto;
-import com.example.syncrowbackend.user.dto.UserResponseDto;
-import com.example.syncrowbackend.user.service.AuthServiceImpl;
+import com.example.syncrowbackend.auth.jwt.TokenResponseDto;
+import com.example.syncrowbackend.auth.security.UserDetailsImpl;
+import com.example.syncrowbackend.auth.dto.LoginRequestDto;
+import com.example.syncrowbackend.auth.dto.LoginResponseDto;
+import com.example.syncrowbackend.auth.dto.ReissueRequestDto;
+import com.example.syncrowbackend.auth.dto.UserResponseDto;
+import com.example.syncrowbackend.auth.service.AuthServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;

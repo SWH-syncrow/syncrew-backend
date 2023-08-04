@@ -1,6 +1,6 @@
-package com.example.syncrowbackend.user.dto;
+package com.example.syncrowbackend.auth.dto;
 
-import com.example.syncrowbackend.user.entity.User;
+import com.example.syncrowbackend.auth.entity.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

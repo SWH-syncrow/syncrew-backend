@@ -1,6 +1,6 @@
-package com.example.syncrowbackend.user.dto;
+package com.example.syncrowbackend.auth.dto;
 
-import com.example.syncrowbackend.common.jwt.TokenResponseDto;
+import com.example.syncrowbackend.auth.jwt.TokenResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 

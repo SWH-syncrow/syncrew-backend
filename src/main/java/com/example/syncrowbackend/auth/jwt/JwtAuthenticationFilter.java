@@ -1,8 +1,8 @@
-package com.example.syncrowbackend.common.jwt;
+package com.example.syncrowbackend.auth.jwt;
 
 import com.example.syncrowbackend.common.exception.ErrorCode;
 import com.example.syncrowbackend.common.exception.ErrorResponseDto;
-import com.example.syncrowbackend.common.security.UserDetailsServiceImpl;
+import com.example.syncrowbackend.auth.security.UserDetailsServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;

@@ -1,4 +1,4 @@
-package com.example.syncrowbackend.user.entity;
+package com.example.syncrowbackend.auth.entity;
 
 import com.example.syncrowbackend.common.entity.BaseTimeEntity;
 import com.example.syncrowbackend.friend.entity.Post;

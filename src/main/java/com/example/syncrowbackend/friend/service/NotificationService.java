@@ -1,7 +1,7 @@
 package com.example.syncrowbackend.friend.service;
 
 import com.example.syncrowbackend.friend.dto.NotificationDto;
-import com.example.syncrowbackend.user.entity.User;
+import com.example.syncrowbackend.auth.entity.User;
 
 import java.util.List;
 

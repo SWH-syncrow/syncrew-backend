@@ -1,6 +1,6 @@
 package com.example.syncrowbackend.friend.controller;
 
-import com.example.syncrowbackend.common.security.UserDetailsImpl;
+import com.example.syncrowbackend.auth.security.UserDetailsImpl;
 import com.example.syncrowbackend.friend.dto.GetGroupPostsResponseDto;
 import com.example.syncrowbackend.friend.dto.GetGroupsResponseDto;
 import com.example.syncrowbackend.friend.enums.GroupCategory;

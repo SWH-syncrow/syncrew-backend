@@ -14,7 +14,7 @@ import com.example.syncrowbackend.friend.repository.FriendRequestRepository;
 import com.example.syncrowbackend.friend.repository.GroupRepository;
 import com.example.syncrowbackend.friend.repository.PostRepository;
 import com.example.syncrowbackend.friend.repository.UserGroupRepository;
-import com.example.syncrowbackend.user.entity.User;
+import com.example.syncrowbackend.auth.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

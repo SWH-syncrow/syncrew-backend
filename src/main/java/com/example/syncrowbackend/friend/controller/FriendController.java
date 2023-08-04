@@ -1,6 +1,6 @@
 package com.example.syncrowbackend.friend.controller;
 
-import com.example.syncrowbackend.common.security.UserDetailsImpl;
+import com.example.syncrowbackend.auth.security.UserDetailsImpl;
 import com.example.syncrowbackend.friend.dto.FriendReactDto;
 import com.example.syncrowbackend.friend.dto.FriendRequestDto;
 import com.example.syncrowbackend.friend.enums.FriendReaction;

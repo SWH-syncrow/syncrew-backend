@@ -1,7 +1,7 @@
-package com.example.syncrowbackend.common.security;
+package com.example.syncrowbackend.auth.security;
 
-import com.example.syncrowbackend.common.jwt.JwtAuthenticationFilter;
-import com.example.syncrowbackend.common.jwt.TokenProvider;
+import com.example.syncrowbackend.auth.jwt.JwtAuthenticationFilter;
+import com.example.syncrowbackend.auth.jwt.TokenProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

@@ -1,6 +1,6 @@
 package com.example.syncrowbackend.friend.entity;
 
-import com.example.syncrowbackend.user.entity.User;
+import com.example.syncrowbackend.auth.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
