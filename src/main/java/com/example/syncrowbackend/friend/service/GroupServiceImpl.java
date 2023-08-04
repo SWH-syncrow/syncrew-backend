@@ -16,25 +16,17 @@ import com.example.syncrowbackend.friend.repository.PostRepository;
 import com.example.syncrowbackend.friend.repository.UserGroupRepository;
 import com.example.syncrowbackend.user.entity.User;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class GroupServiceImpl implements GroupService{
-
-    private final Logger LOGGER = LoggerFactory.getLogger(GroupServiceImpl.class);
+public class GroupServiceImpl implements GroupService {
 
     private final PostRepository postRepository;
     private final GroupRepository groupRepository;
@@ -42,10 +34,12 @@ public class GroupServiceImpl implements GroupService{
     private final FriendRequestRepository friendRequestRepository;
 
     @Override
+    @Transactional
     public Long groupEnter(Long groupId, User user) {
-        LOGGER.info("groupEnter service 호출됨");
         Group group = findGroup(groupId);
-
+        if (userGroupRepository.existsByUserAndGroup(user, group)) {
+            throw new CustomException(ErrorCode.DUPLICATED_GROUP_ENTER, "사용자가 이미 참여중인 그룹입니다.");
+        }
         UserGroup userGroup = UserGroup.builder()
                 .user(user)
                 .group(group)
@@ -56,66 +50,51 @@ public class GroupServiceImpl implements GroupService{
     }
 
     @Override
-    public Page<GetGroupsResponseDto> getGroupsByCategory(GroupCategory category, Pageable pageable) {
-        LOGGER.info("getGroupsByCategory service 호출됨");
-        Page<Group> groups = groupRepository.findByCategory(category, pageable);
-        return groups.map(GetGroupsResponseDto::toDto);
-    }
-
-    @Override
-    public Page<GetGroupPostsResponseDto> getGroupsByDesiredSize(Long groupId, Integer page, Integer limit, Pageable pageable) {
-        LOGGER.info("getGroupsByDesiredSize service 호출됨");
-        Optional<Group> optionalGroup = groupRepository.findById(groupId);
-        if(optionalGroup.isEmpty()){
-            throw new CustomException(ErrorCode.GROUP_NOT_FOUND_ERROR, "해당 그룹을 찾을 수 없습니다.");
-        }
-
-        Page<Post> posts = postRepository.findByGroup(optionalGroup.get(), pageable);
-
-        List<GetGroupPostsResponseDto> responseDtoList = new ArrayList<>();
-        for (Post post : posts) {
-            User user = post.getUser();
-            if (user == null) {
-                throw new CustomException(ErrorCode.USER_NOT_FOUND_ERROR, "해당 작성자를 찾을 수 없습니다.");
-            }
-
-            Page<FriendRequest> friendRequests = friendRequestRepository.findByPostId(post.getId(), pageable);
-            List<Long> rejectedUsers = new ArrayList<>();
-
-            for (FriendRequest friendRequest : friendRequests) {
-                if (friendRequest.getStatus() == FriendRequestStatus.REFUSED) {
-                    rejectedUsers.add(friendRequest.getRequestUser().getId());
-                }
-            }
-            responseDtoList.add(GetGroupPostsResponseDto.toDto(post, rejectedUsers));
-        }
-        return new PageImpl<>(responseDtoList, PageRequest.of(page, limit), posts.getTotalElements());
-    }
-
-    @Override
-    public Page<GetGroupsResponseDto> getParticipatingGroups(User user, Pageable pageable) {
-        LOGGER.info("getParticipatingGroups service 호출됨");
-        Page<FriendRequest> friendRequests = friendRequestRepository.findByRequestUserAndStatus(user, FriendRequestStatus.ACCEPTED, pageable);
-
-        List<GetGroupsResponseDto> getGroupsResponseDtos = friendRequests.getContent().stream()
-                .map(friendRequest -> {
-                    Post post = friendRequest.getPost();
-                    if (post == null) {
-                        throw new CustomException(ErrorCode.POST_NOT_FOUND_ERROR, "해당 게시글을 찾을 수 없습니다.");
-                    }
-                    Group group = post.getGroup();
-                    if (group == null) {
-                        throw new CustomException(ErrorCode.GROUP_NOT_FOUND_ERROR, "해당 그룹을 찾을 수 없습니다.");
-                    }
-                    return GetGroupsResponseDto.toDto(group);
-                }).collect(Collectors.toList());
-
-        return new PageImpl<>(getGroupsResponseDtos, pageable, friendRequests.getTotalElements());
-    }
-
-
     @Transactional(readOnly = true)
+    public List<GetGroupsResponseDto> getGroupsByCategory(GroupCategory category) {
+        List<Group> groups;
+
+        if (category == null) {
+            groups = groupRepository.findAll();
+        } else {
+            groups = groupRepository.findByCategory(category);
+        }
+
+        return groups.stream()
+                .map(GetGroupsResponseDto::toDto)
+                .toList();
+    }
+
+    @Override
+    public Page<GetGroupPostsResponseDto> getGroupPostsByDesiredSize(Long groupId, Pageable pageable) {
+        Group group = findGroup(groupId);
+        Page<Post> postsPage = postRepository.findByGroup(group, pageable);
+
+        List<GetGroupPostsResponseDto> responseDtoList = postsPage.getContent()
+                .stream()
+                .map(post -> {
+                    List<Long> rejectedUserIds = friendRequestRepository.findByPostAndStatus(post, FriendRequestStatus.REFUSED)
+                            .stream()
+                            .map(FriendRequest::getRequestUser)
+                            .map(User::getId)
+                            .toList();
+                    return GetGroupPostsResponseDto.toDto(post, rejectedUserIds);
+                })
+                .toList();
+
+        return new PageImpl<>(responseDtoList, pageable, postsPage.getTotalElements());
+    }
+    @Override
+    public List<GetGroupsResponseDto> getParticipatingGroups(User user) {
+        return userGroupRepository.findByUser(user)
+                .stream()
+                .map(UserGroup::getGroup)
+                .map(GetGroupsResponseDto::toDto)
+                .toList();
+    }
+
     private Group findGroup(Long groupId) {
-        return groupRepository.findById(groupId).orElseThrow(() -> new CustomException(ErrorCode.GROUP_NOT_FOUND_ERROR, "존재하지 않는 그룹입니다."));
+        return groupRepository.findById(groupId).orElseThrow(() ->
+                new CustomException(ErrorCode.GROUP_NOT_FOUND_ERROR, "존재하지 않는 그룹입니다."));
     }
 }
