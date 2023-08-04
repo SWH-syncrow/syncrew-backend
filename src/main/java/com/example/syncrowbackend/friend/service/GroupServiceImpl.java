@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -73,12 +74,14 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<GetGroupPostsResponseDto> getGroupPostsByDesiredSize(Long groupId, Pageable pageable) {
+    public Page<GetGroupPostsResponseDto> getAvailableGroupPosts(Long groupId, Pageable pageable) {
         Group group = findGroup(groupId);
-        Page<Post> postsPage = postRepository.findByGroup(group, pageable);
+        Page<Post> groupPosts = postRepository.findByGroup(group, pageable);
+        List<FriendRequestStatus> excludedStatuses = Arrays.asList(FriendRequestStatus.ACCEPTED, FriendRequestStatus.PROGRESS);
 
-        List<GetGroupPostsResponseDto> responseDtoList = postsPage.getContent()
+        List<GetGroupPostsResponseDto> responseDtoList = groupPosts.getContent()
                 .stream()
+                .filter(post -> !friendRequestRepository.existsByPostAndStatusIn(post, excludedStatuses))
                 .map(post -> {
                     List<Long> rejectedUserIds = friendRequestRepository.findByPostAndStatus(post, FriendRequestStatus.REFUSED)
                             .stream()
@@ -89,7 +92,7 @@ public class GroupServiceImpl implements GroupService {
                 })
                 .toList();
 
-        return new PageImpl<>(responseDtoList, pageable, postsPage.getTotalElements());
+        return new PageImpl<>(responseDtoList, pageable, groupPosts.getTotalElements());
     }
   
     @Override
