@@ -17,7 +17,7 @@ public class GetGroupPostsResponseDto {
     private Long id;
     private String title;
     private String content;
-    private WriterDto writerDto;
+    private WriterDto writer;
     private List<Long> rejectedUsers = new ArrayList<>();
 
     @Builder
@@ -26,7 +26,7 @@ public class GetGroupPostsResponseDto {
                 .id(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
-                .writerDto(WriterDto.toDto(post.getUser()))
+                .writer(WriterDto.toDto(post.getUser()))
                 .rejectedUsers(rejectedUsers)
                 .build();
     }
