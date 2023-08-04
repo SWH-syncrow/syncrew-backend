@@ -33,6 +33,11 @@ public class GroupController {
         return ResponseEntity.ok(groupService.getGroupsByCategory(category));
     }
 
+    @GetMapping("/groups/{groupId}")
+    public ResponseEntity<GetGroupsResponseDto> getGroups(@PathVariable Long groupId){
+        return ResponseEntity.ok(groupService.getGroups(groupId));
+    }
+
     @GetMapping("/groups/{groupId}/posts")
     public ResponseEntity<Page<GetGroupPostsResponseDto>> getGroupPostsByDesiredSize(
             @PathVariable Long groupId,

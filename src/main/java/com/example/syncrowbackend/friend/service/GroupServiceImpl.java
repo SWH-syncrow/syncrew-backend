@@ -64,8 +64,15 @@ public class GroupServiceImpl implements GroupService {
                 .map(GetGroupsResponseDto::toDto)
                 .toList();
     }
+  
+    @Override
+    @Transactional(readOnly = true)
+    public GetGroupsResponseDto getGroups(Long groupId) {
+        return GetGroupsResponseDto.toDto(findGroup(groupId));
+    }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<GetGroupPostsResponseDto> getGroupPostsByDesiredSize(Long groupId, Pageable pageable) {
         Group group = findGroup(groupId);
         Page<Post> postsPage = postRepository.findByGroup(group, pageable);
@@ -84,7 +91,9 @@ public class GroupServiceImpl implements GroupService {
 
         return new PageImpl<>(responseDtoList, pageable, postsPage.getTotalElements());
     }
+  
     @Override
+    @Transactional(readOnly = true)
     public List<GetGroupsResponseDto> getParticipatingGroups(User user) {
         return userGroupRepository.findByUser(user)
                 .stream()
