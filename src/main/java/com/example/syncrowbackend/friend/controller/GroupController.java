@@ -6,9 +6,10 @@ import com.example.syncrowbackend.friend.dto.GetGroupsResponseDto;
 import com.example.syncrowbackend.friend.enums.GroupCategory;
 import com.example.syncrowbackend.friend.service.GroupService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -35,10 +36,8 @@ public class GroupController {
     @GetMapping("/groups/{groupId}/posts")
     public ResponseEntity<Page<GetGroupPostsResponseDto>> getGroupPostsByDesiredSize(
             @PathVariable Long groupId,
-            @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "10") Integer size
+            @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        PageRequest pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(groupService.getGroupPostsByDesiredSize(groupId, pageable));
     }
 
