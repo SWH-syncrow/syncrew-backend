@@ -63,6 +63,12 @@ public class GroupServiceImpl implements GroupService{
     }
 
     @Override
+    public GetGroupsResponseDto getGroups(Long groupId) {
+        LOGGER.info("getGroups service 호출됨");
+        return GetGroupsResponseDto.toDto(findGroup(groupId));
+    }
+
+    @Override
     public Page<GetGroupPostsResponseDto> getGroupsByDesiredSize(Long groupId, Integer page, Integer limit, Pageable pageable) {
         LOGGER.info("getGroupsByDesiredSize service 호출됨");
         Optional<Group> optionalGroup = groupRepository.findById(groupId);

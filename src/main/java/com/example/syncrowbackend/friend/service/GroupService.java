@@ -10,6 +10,7 @@ public interface GroupService {
 
     Long groupEnter(Long groupId, User user);
     Page<GetGroupsResponseDto> getGroupsByCategory(GroupCategory category, Pageable pageable);
+    GetGroupsResponseDto getGroups(Long groupId);
     Page<GetGroupPostsResponseDto> getGroupsByDesiredSize(Long groupId, Integer page, Integer limit, Pageable pageable);
     Page<GetGroupsResponseDto> getParticipatingGroups(User user, Pageable pageable);
 
