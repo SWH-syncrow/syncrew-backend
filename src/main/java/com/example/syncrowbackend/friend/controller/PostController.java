@@ -2,7 +2,6 @@ package com.example.syncrowbackend.friend.controller;
 
 import com.example.syncrowbackend.auth.security.UserDetailsImpl;
 import com.example.syncrowbackend.friend.dto.*;
-import com.example.syncrowbackend.friend.enums.FriendRequestStatus;
 import com.example.syncrowbackend.friend.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,17 +31,24 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
-    // 로그인한 사용자가 쓴 친구신청 post
-    // (status) 로그인한 사용자가 신청 넣은 친구신청 post 정보
     @GetMapping("/user/posts")
-    public ResponseEntity<Page<GetUserResponseDto>> getPostByCurrentUser(@RequestParam(required = false) FriendRequestStatus status, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return status==null ?
-                ResponseEntity.ok(postService.getFriendRequestsByCurrentUser(userDetails.getUser(), pageable)) :
-                ResponseEntity.ok(postService.getReceivedFriendRequestsByCurrentUser(userDetails.getUser(), status, pageable));
+    public ResponseEntity<Page<GetUserResponseDto>> getPostsWrittenByCurrentUser(
+            @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        return ResponseEntity.ok(postService.getPostsWrittenByCurrentUser(userDetails.getUser(), pageable));
+    }
+
+    @GetMapping("/user/requests")
+    public ResponseEntity<Page<GetUserResponseDto>> getPostsRequestedByCurrentUser(
+            @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        return ResponseEntity.ok(postService.getPostsRequestedByCurrentUser(userDetails.getUser(), pageable));
     }
 
     @GetMapping("/list/user/{kakaoId}")
-    public ResponseEntity<Page<FriendRequestPostDto>> searchPostsByUser(@PathVariable String kakaoId, @PageableDefault(sort = "id",  direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<Page<FriendRequestPostDto>> searchPostsByUser(@PathVariable String kakaoId, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(postService.searchPostsByUser(kakaoId, pageable));
     }
 }

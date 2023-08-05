@@ -12,6 +12,6 @@ public interface GroupService {
     Long groupEnter(Long groupId, User user);
     List<GetGroupsResponseDto> getGroupsByCategory(GroupCategory category);
     GetGroupsResponseDto getGroups(Long groupId);
-    Page<GetGroupPostsResponseDto> getGroupPostsByDesiredSize(Long groupId, Pageable pageable);
+    Page<GetGroupPostsResponseDto> getAvailableGroupPosts(Long groupId, Pageable pageable);
     List<GetGroupsResponseDto> getParticipatingGroups(User user);
 }

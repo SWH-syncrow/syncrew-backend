@@ -43,7 +43,7 @@ public class GroupController {
             @PathVariable Long groupId,
             @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        return ResponseEntity.ok(groupService.getGroupPostsByDesiredSize(groupId, pageable));
+        return ResponseEntity.ok(groupService.getAvailableGroupPosts(groupId, pageable));
     }
 
     @GetMapping("/user/groups")
