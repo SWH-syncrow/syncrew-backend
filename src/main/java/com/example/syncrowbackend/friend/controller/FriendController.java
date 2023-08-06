@@ -24,13 +24,13 @@ public class FriendController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/request/accept")
+    @PostMapping("/accept")
     public ResponseEntity<FriendDto> acceptRequest(@RequestBody @Valid FriendReactionDto reactDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         FriendDto friend = friendService.acceptRequest(reactDto, userDetails.getUser());
         return ResponseEntity.ok(friend);
     }
 
-    @PostMapping("/request/refuse")
+    @PostMapping("/refuse")
     public ResponseEntity<Void> refuseRequest(@RequestBody @Valid FriendReactionDto reactDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         friendService.refuseRequest(reactDto, userDetails.getUser());
         return ResponseEntity.ok().build();
