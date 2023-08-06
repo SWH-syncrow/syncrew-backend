@@ -1,16 +1,16 @@
 package com.example.syncrowbackend.auth.controller;
 
 import com.example.syncrowbackend.common.config.DisableSwaggerSecurity;
-import com.example.syncrowbackend.auth.jwt.TokenResponseDto;
+import com.example.syncrowbackend.auth.jwt.TokenDto;
 import com.example.syncrowbackend.auth.security.UserDetailsImpl;
 import com.example.syncrowbackend.auth.dto.LoginRequestDto;
 import com.example.syncrowbackend.auth.dto.LoginResponseDto;
-import com.example.syncrowbackend.auth.dto.ReissueRequestDto;
 import com.example.syncrowbackend.auth.dto.UserResponseDto;
 import com.example.syncrowbackend.auth.service.AuthServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -34,16 +34,16 @@ public class AuthController {
     @DisableSwaggerSecurity
     @Operation(summary = "user login", description = "사용자 로그인")
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody @Valid LoginRequestDto requestDto) {
-        LoginResponseDto responseDto = authService.login(requestDto);
+    public ResponseEntity<LoginResponseDto> login(@RequestBody @Valid LoginRequestDto requestDto, HttpServletResponse response) {
+        LoginResponseDto responseDto = authService.login(requestDto, response);
         return ResponseEntity.ok(responseDto);
     }
 
     @DisableSwaggerSecurity
     @Operation(summary = "token reissue", description = "토큰 재발급")
     @PostMapping("/reissue")
-    public ResponseEntity<TokenResponseDto> reissue(@RequestBody @Valid ReissueRequestDto requestDto) {
-        TokenResponseDto responseDto = authService.reissue(requestDto);
+    public ResponseEntity<TokenDto> reissue(@CookieValue(value = "refreshToken") String refreshToken, HttpServletResponse response) {
+        TokenDto responseDto = authService.reissue(refreshToken, response);
         return ResponseEntity.ok(responseDto);
     }
 

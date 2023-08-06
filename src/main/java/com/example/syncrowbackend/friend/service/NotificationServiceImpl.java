@@ -29,7 +29,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Transactional
-    public void readNotification(List<Long> ids, User user) {
+    public void readNotifications(List<Long> ids, User user) {
         List<Notification> notifications = notificationRepository.findByIdIn(ids);
 
         for (Notification notification : notifications) {

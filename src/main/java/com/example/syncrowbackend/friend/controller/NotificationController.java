@@ -24,8 +24,8 @@ public class NotificationController {
     }
 
     @PutMapping
-    public ResponseEntity<Void> readNotification(@RequestParam List<Long> ids, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        notificationService.readNotification(ids, userDetails.getUser());
+    public ResponseEntity<Void> readNotifications(@RequestParam List<Long> ids, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        notificationService.readNotifications(ids, userDetails.getUser());
         return ResponseEntity.ok().build();
     }
 }
