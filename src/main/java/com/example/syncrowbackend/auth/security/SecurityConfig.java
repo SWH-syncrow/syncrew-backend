@@ -2,6 +2,7 @@ package com.example.syncrowbackend.auth.security;
 
 import com.example.syncrowbackend.auth.jwt.JwtAuthenticationFilter;
 import com.example.syncrowbackend.auth.jwt.TokenProvider;
+import com.example.syncrowbackend.auth.service.RedisTokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,11 +22,12 @@ public class SecurityConfig {
 
     private final ObjectMapper objectMapper;
     private final TokenProvider tokenProvider;
+    private final RedisTokenService redisTokenService;
     private final UserDetailsServiceImpl userDetailsService;
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(objectMapper, tokenProvider, userDetailsService);
+        return new JwtAuthenticationFilter(objectMapper, tokenProvider, redisTokenService, userDetailsService);
     }
 
     @Bean

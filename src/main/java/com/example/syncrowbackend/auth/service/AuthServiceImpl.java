@@ -1,14 +1,18 @@
 package com.example.syncrowbackend.auth.service;
 
+import com.example.syncrowbackend.auth.dto.KakaoUserDto;
+import com.example.syncrowbackend.auth.dto.LoginRequestDto;
+import com.example.syncrowbackend.auth.dto.LoginResponseDto;
+import com.example.syncrowbackend.auth.dto.UserResponseDto;
+import com.example.syncrowbackend.auth.entity.User;
+import com.example.syncrowbackend.auth.jwt.TokenDto;
+import com.example.syncrowbackend.auth.jwt.TokenProvider;
+import com.example.syncrowbackend.auth.repository.UserRepository;
 import com.example.syncrowbackend.common.exception.CustomException;
 import com.example.syncrowbackend.common.exception.ErrorCode;
-import com.example.syncrowbackend.auth.jwt.TokenProvider;
-import com.example.syncrowbackend.auth.jwt.TokenResponseDto;
-import com.example.syncrowbackend.common.redis.RedisUtil;
-import com.example.syncrowbackend.auth.dto.*;
-import com.example.syncrowbackend.auth.entity.User;
-import com.example.syncrowbackend.auth.repository.UserRepository;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
@@ -16,11 +20,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -29,70 +33,88 @@ public class AuthServiceImpl implements AuthService {
     private final WebClient webClient;
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
-    private final RedisUtil redisUtil;
+    private final RedisTokenService redisTokenService;
 
     @Value("${kakao.client-id}")
     private String CLIENT_ID;
 
+    private static final int REFRESH_TOKEN_EXPIRATION_DAYS = 3;
+
     @Override
     @Transactional
-    public LoginResponseDto login(LoginRequestDto requestDto) {
+    public LoginResponseDto login(LoginRequestDto requestDto, HttpServletResponse response) {
         KakaoUserDto kakaoUser = getKakaoUser(requestDto.getAccessToken());
-        if (kakaoUser == null) {
-            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED, "카카오 사용자 정보를 가져오는데 실패했습니다.");
-        }
-        Optional<User> user = userRepository.findByKakaoId(kakaoUser.getId());
+        Optional<User> userOptional = userRepository.findByKakaoId(kakaoUser.getId());
 
-        if (user.isEmpty()) {
-            User newUser = kakaoUser.toEntity();
-            userRepository.save(newUser);
-            return LoginResponseDto.builder()
-                    .user(new UserResponseDto(newUser, true))
-                    .token(tokenProvider.issueToken(newUser))
-                    .isNewUser(Boolean.TRUE)
-                    .build();
+        User user;
+        boolean isNewUser;
+
+        if (userOptional.isEmpty()) {
+            user = userRepository.save(kakaoUser.toEntity());
+            isNewUser = true;
+        } else {
+            user = userOptional.get();
+            isNewUser = false;
         }
 
-        User oldUser = user.get();
         return LoginResponseDto.builder()
-                .user(new UserResponseDto(oldUser, isTestTarget(oldUser)))
-                .token(tokenProvider.issueToken(oldUser))
-                .isNewUser(Boolean.FALSE)
+                .user(new UserResponseDto(user, isNewUser || isTestTarget(user)))
+                .token(handleTokenResponse(user, response))
+                .isNewUser(isNewUser)
                 .build();
     }
 
     @Override
     @Transactional
-    public TokenResponseDto reissue(ReissueRequestDto requestDto) {
-        String refreshToken = requestDto.getRefreshToken();
-        if (!tokenProvider.validateToken(refreshToken)) {
-            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED, "리프레시 토큰이 유효하지 않습니다.");
-        }
-
-        String kakaoId = tokenProvider.getClaims(refreshToken).getSubject();
-        User user = findUser(kakaoId);
-        if (!redisUtil.hasKey(kakaoId) || !redisUtil.get(kakaoId).equals(refreshToken)) {
-            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED, "해당 리프레시 토큰이 존재하지 않습니다.");
-        }
-
-        return tokenProvider.issueToken(user);
+    public TokenDto reissue(String refreshToken, HttpServletResponse response) {
+        String kakaoId = validateRefreshToken(refreshToken);
+        return handleTokenResponse(findUser(kakaoId), response);
     }
 
     @Override
     @Transactional
     public void logout(HttpServletRequest request, User user) {
-        String accessToken = tokenProvider.resolveToken(request);
-        if (!StringUtils.hasText(accessToken)) {
-            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED, "액세스 토큰이 존재하지 않습니다.");
-        }
-        redisUtil.delete(user.getKakaoId());
-        redisUtil.setBlackList(accessToken, "accessToken");
+        String accessToken = tokenProvider.extractTokenFromRequest(request);
+
+        redisTokenService.removeRefreshToken(user.getKakaoId());
+        redisTokenService.addToBlacklist(accessToken, tokenProvider.getAtkExpirationTime());
     }
 
     @Override
     @Transactional
     public UserResponseDto getUser(User user) {
         return new UserResponseDto(user, isTestTarget(user));
+    }
+
+    private String validateRefreshToken(String refreshToken) {
+        if (refreshToken == null) {
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED, "쿠키에 리프레시 토큰이 존재하지 않습니다.");
+        }
+        String kakaoId = tokenProvider.getClaims(refreshToken).getSubject();
+        if (!redisTokenService.hasValidRefreshToken(kakaoId, refreshToken)) {
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED, "쿠키에 저장된 리프레시 토큰이 유효하지 않습니다.");
+        }
+        return kakaoId;
+    }
+
+    private TokenDto handleTokenResponse(User user, HttpServletResponse response) {
+        TokenDto tokens = tokenProvider.issueToken(user);
+        redisTokenService.saveRefreshToken(user.getKakaoId(), tokens.getRefreshToken(), tokenProvider.getRtkExpirationTime());
+        setTokensInResponse(tokens, response);
+        return tokens;
+    }
+
+    private void setTokensInResponse(TokenDto tokens, HttpServletResponse response) {
+        response.setHeader("Authorization", "Bearer " + tokens.getAccessToken());
+        addRefreshTokenCookie(tokens.getRefreshToken(), response);
+    }
+
+    private void addRefreshTokenCookie(String refreshToken, HttpServletResponse response) {
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setMaxAge((int) TimeUnit.DAYS.toSeconds(REFRESH_TOKEN_EXPIRATION_DAYS));
+        refreshTokenCookie.setPath("/");
+        response.addCookie(refreshTokenCookie);
     }
 
     public String getKakaoToken(String code) {

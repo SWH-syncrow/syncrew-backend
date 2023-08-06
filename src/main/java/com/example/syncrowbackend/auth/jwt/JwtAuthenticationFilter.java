@@ -1,10 +1,11 @@
 package com.example.syncrowbackend.auth.jwt;
 
+import com.example.syncrowbackend.auth.security.UserDetailsServiceImpl;
+import com.example.syncrowbackend.auth.service.RedisTokenService;
 import com.example.syncrowbackend.common.exception.ErrorCode;
 import com.example.syncrowbackend.common.exception.ErrorResponseDto;
-import com.example.syncrowbackend.auth.security.UserDetailsServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.*;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +17,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -27,24 +27,46 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final ObjectMapper objectMapper;
     private final TokenProvider tokenProvider;
+    private final RedisTokenService redisTokenService;
     private final UserDetailsServiceImpl userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("Requested URL : {}", request.getRequestURI());
-        String token = tokenProvider.resolveToken(request);
-        if (StringUtils.hasText(token)) {
-            if (!tokenProvider.validateToken(token)) {
-                ErrorResponseDto responseDto = new ErrorResponseDto(ErrorCode.AUTHENTICATION_FAILED, "인증 토큰이 올바른지 확인해주세요.");
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.setContentType("application/json; charset=UTF-8");
-                response.getWriter().write(objectMapper.writeValueAsString(responseDto));
+
+        String token = tokenProvider.extractTokenFromRequest(request);
+        if (token != null) {
+            try {
+                Claims claims = validateToken(token);
+                setAuthentication(claims.getSubject());
+            } catch (ExpiredJwtException e) {
+                handleTokenError(response, "토큰이 만료되었습니다.");
+                return;
+            } catch (SecurityException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
+                handleTokenError(response, "지원되지 않는 토큰입니다.");
                 return;
             }
-            Claims claims = tokenProvider.getClaims(token);
-            setAuthentication(claims.getSubject());
+            if (redisTokenService.isTokenBlacklisted(token)) {
+                handleTokenError(response, "블랙리스트에 등록된 토큰입니다. 다시 로그인해주세요.");
+                return;
+            }
         }
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
+    }
+
+    private Claims validateToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(tokenProvider.getKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    private void handleTokenError(HttpServletResponse response, String message) throws IOException {
+        ErrorResponseDto responseDto = new ErrorResponseDto(ErrorCode.AUTHENTICATION_FAILED, message);
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json; charset=UTF-8");
+        response.getWriter().write(objectMapper.writeValueAsString(responseDto));
     }
 
     private void setAuthentication(String kakaoId) {

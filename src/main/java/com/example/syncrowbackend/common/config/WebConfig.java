@@ -1,8 +1,6 @@
 package com.example.syncrowbackend.common.config;
 
-import com.example.syncrowbackend.friend.util.StringToEnumConverter;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.format.FormatterRegistry;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -22,10 +20,5 @@ public class WebConfig implements WebMvcConfigurer {
                         HttpMethod.OPTIONS.name())
                 .allowCredentials(true)
                 .maxAge(3600);
-    }
-
-    @Override
-    public void addFormatters(FormatterRegistry registry) {
-        registry.addConverter(new StringToEnumConverter());
     }
 }
