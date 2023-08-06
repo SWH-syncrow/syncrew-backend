@@ -1,9 +1,7 @@
 package com.example.syncrowbackend.auth.security;
 
+import com.example.syncrowbackend.auth.jwt.JwtAuthenticationEntryPoint;
 import com.example.syncrowbackend.auth.jwt.JwtAuthenticationFilter;
-import com.example.syncrowbackend.auth.jwt.TokenProvider;
-import com.example.syncrowbackend.auth.service.RedisTokenService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,15 +18,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final ObjectMapper objectMapper;
-    private final TokenProvider tokenProvider;
-    private final RedisTokenService redisTokenService;
-    private final UserDetailsServiceImpl userDetailsService;
-
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(objectMapper, tokenProvider, redisTokenService, userDetailsService);
-    }
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -36,18 +27,26 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement((sessionManagement) ->
-                    sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests((authorizeHttpRequests) ->
-                    authorizeHttpRequests
-                            .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                            .requestMatchers("/api-docs/**", "swagger*/**").permitAll()
-                            .requestMatchers("/").permitAll()
-                            .requestMatchers("/api/auth/login", "/api/auth/reissue", "/api/auth/test").permitAll()
-                            .requestMatchers("/api/groups").permitAll()
-                            .anyRequest().authenticated()
+                        authorizeHttpRequests
+                                .requestMatchers(HttpMethod.OPTIONS).permitAll()
+                                .requestMatchers(
+                                        "/",
+                                        "/api-docs/**",
+                                        "swagger*/**").permitAll()
+                                .requestMatchers(
+                                        "/api/auth/login",
+                                        "/api/auth/reissue",
+                                        "/api/auth/test",
+                                        "/api/groups").permitAll()
+                                .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+                .exceptionHandling((exceptionHandling) ->
+                        exceptionHandling.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                )
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
