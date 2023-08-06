@@ -43,7 +43,7 @@ public class FriendServiceImpl implements FriendService {
     @Transactional
     public FriendDto acceptRequest(FriendReactionDto reactionDto, User user) {
         FriendRequest friendRequest = findFriendRequest(reactionDto.getFriendRequestId());
-        validateReaction(user, friendRequest);
+        validateAcceptRequest(user, friendRequest);
 
         friendRequest.accepted();
         sendAcceptNotifications(friendRequest);
@@ -55,7 +55,7 @@ public class FriendServiceImpl implements FriendService {
     @Transactional
     public void refuseRequest(FriendReactionDto reactionDto, User user) {
         FriendRequest friendRequest = findFriendRequest(reactionDto.getFriendRequestId());
-        validateReaction(user, friendRequest);
+        validateRefuseRequest(user, friendRequest);
 
         friendRequest.refused();
         sendRefuseNotifications(friendRequest);
@@ -77,13 +77,23 @@ public class FriendServiceImpl implements FriendService {
         }
     }
 
-    private static void validateReaction(User user, FriendRequest friendRequest) {
+    private void validateAcceptRequest(User user, FriendRequest friendRequest) {
         if (!friendRequest.getPost().getUser().getId().equals(user.getId())) {
-            throw new CustomException(ErrorCode.PERMISSION_NOT_GRANTED_ERROR, "자신이 받은 친구 신청에 대해서만 수락 또는 거절할 수 있습니다.");
+            throw new CustomException(ErrorCode.PERMISSION_NOT_GRANTED_ERROR, "자신이 받은 친구 신청에 대해서만 수락할 수 있습니다.");
         }
 
         if (friendRequest.getStatus() != FriendRequestStatus.PROGRESS) {
             throw new CustomException(ErrorCode.ALREADY_REACTED_FRIEND_REQUEST, "이미 수락 또는 거절한 친구 신청입니다.");
+        }
+    }
+
+    private void validateRefuseRequest(User user, FriendRequest friendRequest) {
+        if (!friendRequest.getPost().getUser().getId().equals(user.getId())) {
+            throw new CustomException(ErrorCode.PERMISSION_NOT_GRANTED_ERROR, "자신이 받은 친구 신청에 대해서만 거절할 수 있습니다.");
+        }
+
+        if (friendRequest.getStatus() == FriendRequestStatus.REFUSED) {
+            throw new CustomException(ErrorCode.ALREADY_REACTED_FRIEND_REQUEST, "이미 거절한 친구 신청입니다.");
         }
     }
 
