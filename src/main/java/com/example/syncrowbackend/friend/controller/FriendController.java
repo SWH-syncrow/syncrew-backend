@@ -1,9 +1,9 @@
 package com.example.syncrowbackend.friend.controller;
 
 import com.example.syncrowbackend.auth.security.UserDetailsImpl;
-import com.example.syncrowbackend.friend.dto.FriendReactDto;
+import com.example.syncrowbackend.friend.dto.FriendReactionDto;
 import com.example.syncrowbackend.friend.dto.FriendRequestDto;
-import com.example.syncrowbackend.friend.enums.FriendReaction;
+import com.example.syncrowbackend.friend.dto.FriendDto;
 import com.example.syncrowbackend.friend.service.FriendServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +24,15 @@ public class FriendController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping
-    public ResponseEntity<Void> friendReact(@RequestParam("q") FriendReaction reaction,
-                                            @RequestBody @Valid FriendReactDto reactDto,
-                                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        friendService.friendReact(reaction, reactDto, userDetails.getUser());
+    @PostMapping("/request/accept")
+    public ResponseEntity<FriendDto> acceptRequest(@RequestBody @Valid FriendReactionDto reactDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        FriendDto friend = friendService.acceptRequest(reactDto, userDetails.getUser());
+        return ResponseEntity.ok(friend);
+    }
+
+    @PostMapping("/request/refuse")
+    public ResponseEntity<Void> refuseRequest(@RequestBody @Valid FriendReactionDto reactDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        friendService.refuseRequest(reactDto, userDetails.getUser());
         return ResponseEntity.ok().build();
     }
 }
