@@ -34,17 +34,15 @@ syncrew는 프론트엔드 저장소와 백엔드 저장소가 분리되어 있�
 |Planner (팀장)|Designer (팀원)|Frontend (팀원)|Backend (팀원)|Backend (팀원)|
 |-------|--------|--------|-------|-------|
 |<img src="https://github.com/SWH-syncrow/syncrew-backend/assets/74345771/b18d5aca-3ca9-4b10-9d46-4ad74b19d53a" width=140 height=170>|<img src="https://github.com/SWH-syncrow/syncrew-backend/assets/74345771/98a1ad97-04da-4dd4-89d6-ea46e5482f52" width=140 height=170>|<img src="https://github.com/SWH-syncrow/syncrew-backend/assets/74345771/18b41406-ac5a-49c5-8950-93565afee891" width=140 height=170>|<img src="https://github.com/SWH-syncrow/syncrew-backend/assets/74345771/b1d321b9-f9ee-4354-96e0-ba0d5243878d" width=140 height=170>|<img src="https://github.com/SWH-syncrow/syncrew-backend/assets/74345771/b8f3e6fc-9f67-415a-b087-d7633a579d3e" width=140 height=170>
-|<div align="center">[이인혜](https://disquiet.io/@leeinhye)</div>|<div align="center">[김여원]()</div>|<div align="center">[김지현](https://github.com/runru1030)</div>|<div align="center">[김은비](https://github.com/eunb1)</div>|<div align="center">[박소미](https://github.com/fsm12)</div>|
+|<div align="center">[이인혜](https://disquiet.io/@leeinhye)</div>|<div align="center">김여원</div>|<div align="center">[김지현](https://github.com/runru1030)</div>|<div align="center">[김은비](https://github.com/eunb1)</div>|<div align="center">[박소미](https://github.com/fsm12)</div>|
 
 </br></br>
 
 ## 🔧 사용한 기술 스택은 아래와 같아요
 **Frontend**
-- Language : 
-- Library & Framework : 
-- Test : 
-- Deploy : 
-- CI/CD : Github Actions
+- Language : TypeScript
+- Library & Framework : React js, Next js, react-query, Jotai, tailwind-css, styled-components
+- CI/CD : Vercel
 </br></br>
 
 **Backend**
@@ -54,17 +52,6 @@ syncrew는 프론트엔드 저장소와 백엔드 저장소가 분리되어 있�
 - ORM : JPA
 - Deploy : AWS(EC2)
 - CI/CD : Github Actions
-</br></br>
-</br></br>
-
-## 🔨 그림으로 전체 구조에 대해 보여드릴게요
-**Front-End Architecture**  
-추가예정
-</br></br>
-
-**Back-End Architecture**  
-추가예정
-
 </br></br>
 </br></br>
 
