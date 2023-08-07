@@ -105,19 +105,18 @@ public class FriendServiceImpl implements FriendService {
     private void sendAcceptNotifications(FriendRequest friendRequest) {
         notificationRepository.save(new Notification(friendRequest.getRequestUser(), friendRequest, NotificationStatus.ACCEPTED));
         notificationRepository.save(new Notification(friendRequest.getPost().getUser(), friendRequest, NotificationStatus.ACCEPT));
-        deleteRequestedNotification(friendRequest);
+        deleteRequestedNotificationIfExists(friendRequest);
     }
 
     private void sendRefuseNotifications(FriendRequest friendRequest) {
         notificationRepository.save(new Notification(friendRequest.getRequestUser(), friendRequest, NotificationStatus.REFUSED));
         notificationRepository.save(new Notification(friendRequest.getPost().getUser(), friendRequest, NotificationStatus.REFUSE));
-        deleteRequestedNotification(friendRequest);
+        deleteRequestedNotificationIfExists(friendRequest);
     }
 
-    private void deleteRequestedNotification(FriendRequest friendRequest) {
-        Notification requested = notificationRepository.findByFriendRequestAndStatus(friendRequest, NotificationStatus.REQUESTED)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOTIFICATION_NOT_FOUND_ERROR, "친구 신청이 도착했다는 사용자 알림이 존재하지 않아 삭제 불가합니다."));
-        notificationRepository.delete(requested);
+    private void deleteRequestedNotificationIfExists(FriendRequest friendRequest) {
+        notificationRepository.findByFriendRequestAndStatus(friendRequest, NotificationStatus.REQUESTED)
+                        .ifPresent(notificationRepository::delete);
     }
 
     private Post findPost(Long id) {
