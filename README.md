@@ -40,20 +40,39 @@ syncrew는 프론트엔드 저장소와 백엔드 저장소가 분리되어 있�
 
 ## 🔧 사용한 기술 스택은 아래와 같아요
 **Frontend**
-- Language : TypeScript
-- Library & Framework : React js, Next js, react-query, Jotai, tailwind-css, styled-components
-- CI/CD : Vercel
-</br></br>
+<p><img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white">
+<p><img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" >
+<img src="https://img.shields.io/badge/next%20js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white">
+<img src="https://img.shields.io/badge/React_Query-FF4154?style=for-the-badge&logo=React_Query&logoColor=white">
+<img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white">
+<img src="https://img.shields.io/badge/styled--components-DB7093?style=for-the-badge&logo=styled-components&logoColor=white"></p>
+<p><img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=styled-components&logoColor=white"></p>
 
 **Backend**
-- Language : Java
-- Library & Framework : Spring Boot 3.1.1
-- Database : MySQL, Redis
-- ORM : JPA
-- Deploy : AWS(EC2)
-- CI/CD : Github Actions
-</br></br>
-</br></br>
+<p>
+<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=OpenJDK&logoColor=white">
+</p>
+<p>
+<img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
+<img src="https://img.shields.io/badge/Spring Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white">
+<img src="https://img.shields.io/badge/Spring Data JPA-6DB33F?style=for-the-badge&logo=&logoColor=white">
+</p>
+<p>
+<img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
+<img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white">
+</p>
+<p>
+<img src="https://img.shields.io/badge/Amazon EC2-FF9900?style=for-the-badge&logo=redis&logoColor=white">
+<img src="https://img.shields.io/badge/Amazon RDS-527FFF?style=for-the-badge&logo=redis&logoColor=white">
+</p>
+<p>
+<img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
+<img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
+  <img src="https://img.shields.io/badge/Github Actions-2088FF?style=for-the-badge&logo=github&logoColor=white">
+<img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white">
+</p>
+
+<br>
 
 ## 💻 서비스 화면을 알려드릴게요
 <img src="https://github.com/SWH-syncrow/syncrew-backend/assets/74345771/e075ca0c-d74d-4c0b-88e2-d77ac3181a2d">
